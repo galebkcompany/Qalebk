@@ -9,9 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@paddle/paddle-js": "^1.6.1",
+    "@supabase/supabase-js": "^2.90.1",
+    "@tailwindcss/line-clamp": "^0.4.4",
+    "axios": "^1.13.2",
+    "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "recharts": "^3.6.0",
+    "slugify": "^1.6.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

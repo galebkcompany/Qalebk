@@ -1,0 +1,162 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { Heart, User, Menu } from "lucide-react";
+import { useState, useEffect } from "react";
+
+export default function Header() {
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [favoritesCount, setFavoritesCount] = useState(0);
+
+  useEffect(() => {
+    const updateFavoritesCount = () => {
+      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+      setFavoritesCount(favorites.length);
+    };
+
+    updateFavoritesCount();
+
+    window.addEventListener("favorites-updated", updateFavoritesCount);
+    window.addEventListener("storage", updateFavoritesCount);
+
+    return () => {
+      window.removeEventListener("favorites-updated", updateFavoritesCount);
+      window.removeEventListener("storage", updateFavoritesCount);
+    };
+  }, []);
+
+  const categories = [
+    { name: "أقسام جاهزة", href: "/categories/sections" },
+  ];
+
+  return (
+    <header className="w-full border-b border-gray-300 bg-backg py-1 text-black">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="flex flex-col gap-2 py-2 sm:flex-row sm:h-16 sm:items-center sm:gap-6 sm:py-0">
+          {/* الصف الأول - في الموبايل: Logo + الأيقونات | في التابلت والكمبيوتر: كل شيء */}
+          <div className="flex items-center gap-4 sm:flex-1 sm:gap-6">
+            {/* Logo */}
+            <Link href="/" className="w-[72px] sm:w-[90px]">
+              <Image
+                src="/images/logo/logo.png"
+                alt="قالبك Qalebk"
+                width={362}
+                height={689}
+                priority
+                sizes="(max-width: 640px) 90px, 120px"
+                className="w-full h-auto object-contain"
+              />
+            </Link>
+
+            {/* زر الفئات - يظهر فقط في الشاشات الكبيرة */}
+            <div className="hidden sm:block relative">
+              <button
+                onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-gray-100 transition-colors flex-shrink-0"
+              >
+                <Menu size={22} />
+                <span className="text-sm font-medium">الفئات</span>
+              </button>
+
+              {/* القائمة المنسدلة */}
+              {isCategoriesOpen && (
+                <>
+                  {/* طبقة شفافة للإغلاق عند الضغط خارج القائمة */}
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setIsCategoriesOpen(false)}
+                  />
+
+                  <div className="absolute top-full py-3  right-0 mt-4 w-64 bg-white border border-gray-100 rounded-lg shadow-lg z-20">
+                    {categories.map((category, index) => (
+                      <Link
+                        key={index}
+                        href={category.href}
+                        onClick={() => setIsCategoriesOpen(false)}
+                        className="block px-4 py-3 text-base hover:bg-gray-50 transition-colors  "
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* حقل البحث - يظهر فقط في الشاشات الكبيرة */}
+            <div className="hidden sm:flex sm:flex-1 sm:min-w-0">
+              <input
+                type="text"
+                placeholder="مثال: قسم متجر عطور"
+                className="w-full rounded-full bg-white border border-gray-500 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-gray-800"
+              />
+            </div>
+
+            {/* الأيقونات - دائماً ظاهرة في نفس الصف مع اللوجو على الموبايل */}
+            <div className="flex items-center gap-6 mr-auto sm:mr-6 flex-shrink-0">
+              <Link href="/account" className="hover:opacity-70 bg-white">
+                <User size={24} />
+              </Link>
+
+              <Link href="/favorites" className="relative hover:opacity-70">
+                <Heart size={23} />
+
+                {favoritesCount > 0 && (
+                  <span className="absolute -top-2 -left-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#F63049] text-xs text-white">
+                    {favoritesCount}
+                  </span>
+                )}
+              </Link>
+            </div>
+          </div>
+
+          {/* الصف الثاني - يظهر فقط في الشاشات الصغيرة */}
+          <div className="flex items-center gap-2 sm:hidden">
+            {/* أيقونة الفئات بدون نص */}
+            <div className="relative">
+              <button
+                onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <Menu size={20} />
+              </button>
+
+              {/* القائمة المنسدلة للموبايل */}
+              {isCategoriesOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setIsCategoriesOpen(false)}
+                  />
+
+                  <div className="absolute top-full py-4 right-0 mt-2 w-60 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                    {categories.map((category, index) => (
+                      <Link
+                        key={index}
+                        href={category.href}
+                        onClick={() => setIsCategoriesOpen(false)}
+                        className="block px-4 py-3 text-base hover:bg-gray-50 transition-colors "
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* حقل البحث */}
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="مثال: قسم متجر عطور"
+                className="w-full rounded-full bg-white border border-gray-500 px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-600"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}

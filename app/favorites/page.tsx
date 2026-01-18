@@ -1,0 +1,109 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+
+interface FavoriteItem {
+  id: string;
+  name: string;
+  price: number;
+  image_url: string;
+  product_url: string;
+  is_featured: boolean;
+}
+
+export default function FavoritesPage() {
+  const [items, setItems] = useState<FavoriteItem[]>([]);
+
+  useEffect(() => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    setItems(favorites);
+  }, []);
+
+  const removeItem = (id: string) => {
+    const updatedFavorites = items.filter((item) => item.id !== id);
+    setItems(updatedFavorites);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    window.dispatchEvent(new Event("favorites-updated"));
+  };
+
+  if (items.length === 0) {
+    return (
+      <div className="flex bg-white flex-col items-center justify-center min-h-[100vh]">
+        <h2 className="text-2xl font-semibold text-gray-800">
+          لا توجد منتجات في المفضلة
+        </h2>
+        <Link
+          href="/"
+          className="mt-4 text-blue-500 bg-gray-100 p-3 rounded-full hover:underline"
+        >
+          العودة للتسوق
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl bg-white text-black mx-auto p-6">
+      <h1 className="text-3xl font-medium mb-8 text-right">المنتجات المفضلة</h1>
+
+      <div className="space-y-6">
+        {items.map((item) => (
+          <Link href={item.product_url} key={item.id} className="block">
+            <div className="flex items-center justify-between border border-gray-200 p-4 rounded-xl bg-white hover:shadow-sm transition-all cursor-pointer">
+              <div className="flex items-center gap-4">
+                {item.image_url && (
+                  <img
+                    src={item.image_url}
+                    alt={item.name}
+                    className="w-90 aspect-[990/480] rounded-xl overflow-hidden bg-gray-100 object-cover"
+                  />
+                )}
+
+                <div className="flex flex-col gap-1">
+                  {item.is_featured && (
+                    <div className="inline-flex items-center w-fit gap-1 bg-purple-600/95 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full mb-1">
+                      <span>مميز</span>
+                      <span>★</span>
+                    </div>
+                  )}
+
+                  <p className="text-xl font-medium text-gray-800">
+                    {item.name}
+                  </p>
+
+                  {/* السعر + الخصم */}
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="text-xl font-bold text-black">
+                      {item.price} USD
+                    </span>
+
+                    <span className="text-sm text-gray-400 line-through">
+                      {item.price * 2} USD
+                    </span>
+
+                    <span className="text-green-600 text-sm font-medium">
+                      خصم 50% لفتره محدوده
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* زر الإزالة – يمنع الانتقال */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  removeItem(item.id);
+                }}
+                className="text-gray-600 hover:text-red-500 px-4 py-2 rounded-lg transition-colors"
+              >
+                إزالة
+              </button>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
