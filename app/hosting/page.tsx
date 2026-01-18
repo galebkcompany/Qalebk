@@ -1,5 +1,9 @@
+import Footer from "@/app/components/Footer";
+
+
 export default function Hosting() {
   return (
+    <>
     <div className="min-h-screen bg-white text-black">
       {/* Header */}
       <header className="border-b border-gray-200 py-8">
@@ -207,5 +211,7 @@ export default function Hosting() {
         </div>
       </footer>
     </div>
+    <Footer />
+    </>
   );
 }

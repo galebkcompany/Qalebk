@@ -1,5 +1,8 @@
+import Footer from "@/app/components/Footer";
+
 export default function Terms() {
   return (
+    <>
     <div className="min-h-screen bg-white text-black">
       {/* Header */}
       <header className="border-b border-gray-200 py-8">
@@ -154,15 +157,20 @@ export default function Terms() {
               <span className="font-semibold">support@qalebk.com</span>
             </p>
           </section>
+
+          {/* Contact */}
+          <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+            <h2 className="text-xl font-bold mb-3">المالك</h2>
+            <p className="text-gray-700">
+              يتم تشغيل منصة قالبك بواسطة Mohanad Ibrahim Mukhtar كمالك مؤسسة فردية
+            </p>
+          </section>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-gray-50 py-8 mt-12">
-        <div className="container max-w-4xl mx-auto space-y-8 text-center text-gray-600 text-sm">
-          <p>© 2026 قالبك . جميع الحقوق محفوظة.</p>
-        </div>
-      </footer>
     </div>
+    <Footer />
+    </>
   );
 }

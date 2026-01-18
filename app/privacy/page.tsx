@@ -1,5 +1,9 @@
+import Footer from "@/app/components/Footer";
+
+
 export default function Privacy() {
   return (
+    <>
     <div className="min-h-screen bg-white text-black ">
       {/* Header */}
       <header className="border-b border-gray-200 py-8">
@@ -191,12 +195,9 @@ export default function Privacy() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-200 bg-gray-50 py-8 mt-12">
-        <div className="container max-w-4xl mx-auto space-y-8 text-center text-gray-600 text-sm">
-          <p>© 2026 قالبك . جميع الحقوق محفوظة.</p>
-        </div>
-      </footer>
+      
     </div>
+    <Footer/>
+    </>
   );
 }

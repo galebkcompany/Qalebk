@@ -438,7 +438,7 @@ export default function ProductPageClient({
                   addToFavorite();
                   handleAddToFavorite();
                 }}
-                disabled={favoriteState  !== "idle"}
+                disabled={favoriteState !== "idle"}
                 className={`
       flex-[2]
       h-[47px]
@@ -446,22 +446,22 @@ export default function ProductPageClient({
       rounded-full
       transition-all duration-300
       ${
-        favoriteState  === "success"
+        favoriteState === "success"
           ? "bg-white border border-gray-300"
           : "bg-white border border-gray-300 hover:bg-gray-100"
       }
       disabled:cursor-not-allowed
     `}
               >
-                {favoriteState  === "idle" && (
+                {favoriteState === "idle" && (
                   <Heart size={20} className="text-black" />
                 )}
 
-                {favoriteState  === "loading" && (
+                {favoriteState === "loading" && (
                   <span className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
                 )}
 
-                {favoriteState  === "success" && (
+                {favoriteState === "success" && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-5 h-5 text-black"
@@ -491,6 +491,18 @@ export default function ProductPageClient({
 
               {/* نوع المنتج */}
               <DetailItem label="نوع المنتج" value="منتج رقمي" />
+
+              {/* طريقة الاستلام - ضرورية جداً لـ Paddle */}
+              <DetailItem
+                label="طريقة الاستلام"
+                value="تسليم فوري (تنزيل)"
+              />
+
+              {/* ما الذي ستحصل عليه؟ */}
+              <DetailItem
+                label="محتويات الملف"
+                value="أكواد HTML,CSS,JavaScript"
+              />
 
               {/*  التجاوب */}
               <DetailItem
