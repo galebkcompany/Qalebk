@@ -7,6 +7,7 @@ import { Eye, Heart, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Footer from "@/app/components/Footer";
 
+
 interface Product {
   id: string;
   name: string;
@@ -23,6 +24,7 @@ interface Product {
     price_label: string;
   };
 }
+
 
 export default function ProductPageClient({
   product,
