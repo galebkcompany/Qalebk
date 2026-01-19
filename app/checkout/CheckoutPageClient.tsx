@@ -32,6 +32,19 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState<string | null>(null);
   const [polling, setPolling] = useState(false);
 
+  useEffect(() => {
+  if (submitting) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, [submitting]);
+
+
   const originalPrice = product?.prices.amount ? product.prices.amount * 2 : 0;
   const discount = 50;
   const finalPrice = product?.prices.amount || 0;
@@ -276,24 +289,29 @@ export default function CheckoutPage() {
 
   return (
   <div className="min-h-screen bg-white py-12 px-4" dir="rtl">
-    {/* نافذة الدفع - تغطي كل الشاشة */}
+    
+        {/* نافذة الدفع - تغطي كل الشاشة */}
     {submitting && (
-      <div className="fixed inset-0 bg-white z-50 flex flex-col items-center justify-start pt-12 px-4">
-        {/* النص التوضيحي */}
-        <div className="mb-6 text-center max-w-md">
-          <p className="text-gray-600 text-sm">
-            سوف يتم توجيهك مباشرة بعد الدفع لصفحة الاستلام
-          </p>
-        </div>
+      <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+        {/* الحاوية الداخلية التي تتوسط الصفحة وتسمح بالتمرير الطبيعي */}
+        <div className="min-h-full w-full flex flex-col items-center justify-start pt-10 pb-20 px-4">
+          
+          {/* النص التوضيحي */}
+          <div className="mb-6 text-center max-w-md">
+            <p className="text-gray-600 text-sm">
+              سوف يتم توجيهك مباشرة بعد الدفع لصفحة الاستلام
+            </p>
+          </div>
 
-        {/* حاوية نافذة الدفع */}
-        <div className="w-full max-w-2xl bg-white rounded-2xl border border-gray-200 p-6 shadow-lg">
-          <div
-            id="paddle-checkout-container"
-            className="paddle-checkout-container"
-            ref={checkoutContainerRef}
-            style={{ width: "100%", minHeight: "500px" }}
-          ></div>
+          {/* حاوية نافذة الدفع */}
+          <div className="w-full max-w-2xl bg-white rounded-2xl border border-gray-200 p-2 md:p-6 shadow-lg">
+            <div
+              id="paddle-checkout-container"
+              className="paddle-checkout-container"
+              ref={checkoutContainerRef}
+              style={{ width: "100%" }} 
+            ></div>
+          </div>
         </div>
       </div>
     )}

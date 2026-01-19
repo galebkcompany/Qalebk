@@ -57,13 +57,7 @@ export async function GET(request: NextRequest) {
       const currentTime = new Date().getTime();
       const diffInMinutes = (expiresAt - currentTime) / 60000;
 
-      // سجلات للتتبع في الـ Terminal
-      console.log("--- فحص صلاحية الرابط ---");
-      console.log("وقت الانتهاء من القاعدة (Raw):", order.token_expires_at);
-      console.log("وقت الانتهاء (ms):", expiresAt);
-      console.log("الوقت الحالي (ms):", currentTime);
-      console.log("الدقائق المتبقية:", diffInMinutes.toFixed(2));
-      console.log("------------------------");
+
 
       if (expiresAt < currentTime) {
         console.warn("⚠️ الرابط منتهي الصلاحية فعلياً");
@@ -73,7 +67,6 @@ export async function GET(request: NextRequest) {
         );
       }
     } else {
-      console.log("ℹ️ لم يتم ضبط وقت انتهاء بعد (أول فتح للرابط)");
     }
 
     // 3️⃣ تحقق من عدد مرات الوصول
