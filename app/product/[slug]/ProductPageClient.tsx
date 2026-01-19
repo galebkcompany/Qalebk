@@ -190,7 +190,7 @@ export default function ProductPageClient({
             </div>
             {/* تفاصيل المنتج */}
             <ProductSection
-              title="وصف المنتج"
+              title="وصف القسم"
               content={product.description}
             />
             {/* الحقول القابلة للتخصيص */}
@@ -483,19 +483,19 @@ export default function ProductPageClient({
             {/* تفاصيل إضافية */}
             <div className="space-y-3 border-t border-gray-200 pt-7">
               <h3 className="font-semibold text-black text-lg">
-                تفاصيل المنتج
+                تفاصيل القسم
               </h3>
 
               {/* يباع بواسطة */}
               {/* <DetailItem label="يباع بواسطة" value="قالبك" /> */}
 
               {/* نوع المنتج */}
-              {/* <DetailItem label="نوع المنتج" value="منتج رقمي" /> */}
+              <DetailItem label="نوع المنتج" value="منتج رقمي (Section)" />
 
               {/* طريقة الاستلام - ضرورية جداً لـ Paddle */}
               <DetailItem
                 label="طريقة الاستلام"
-                value="تنزيل فوري"
+                value="تحميل فوري"
               />
 
               {/* ما الذي ستحصل عليه؟ */}
@@ -516,7 +516,7 @@ export default function ProductPageClient({
               {/* التوصيل */}
               <CollapsibleSection
                 id="delivery"
-                title="التوصيل: تنزيل فوري"
+                title="التوصيل: تحميل فوري"
                 content="المنتجات التي يتم تنزيلها فوراً لا تقبل عمليات الاسترجاع أو الاستبدال، في حال وجود مشكلة يرجي التواصل مع الدعم."
                 isOpen={openSections["delivery"] || false}
                 onToggle={() => toggleSection("delivery")}
