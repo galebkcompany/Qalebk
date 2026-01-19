@@ -4,7 +4,12 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: ['qalebk.com'], // النطاقات المسموحة للصور
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.cloudinary.com', // إذا كنت تستخدم Cloudinary
+      },
+    ],
     formats: ['image/avif', 'image/webp'], // تحسين الصور
   },
 
