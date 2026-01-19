@@ -1,7 +1,7 @@
 // app/product/[slug]/ProductPageClient.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Eye, Heart, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -173,7 +173,7 @@ export default function ProductPageClient({
           {/* الجانب الايمن - الصورة والمحتوى */}
           <div className=" space-y-8">
             {/* صورة المنتج */}
-            <div className="relative bg-gray-100 rounded-2xl border border-gray-100 overflow-hidden aspect-[990/480] w-full">
+            <div className="relative bg-gray-100 rounded-2xl border border-gray-100 overflow-hidden  w-full">
               {product.is_featured && (
                 <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 sm:px-3 sm:text-[11px] rounded-full shadow-lg">
                   <span>مميز</span>
@@ -190,7 +190,7 @@ export default function ProductPageClient({
             </div>
             {/* تفاصيل المنتج */}
             <ProductSection
-              title="تفاصيل المنتج"
+              title="وصف المنتج"
               content={product.description}
             />
             {/* الحقول القابلة للتخصيص */}
@@ -483,25 +483,25 @@ export default function ProductPageClient({
             {/* تفاصيل إضافية */}
             <div className="space-y-3 border-t border-gray-200 pt-7">
               <h3 className="font-semibold text-black text-lg">
-                تفاصيل إضافية:
+                تفاصيل المنتج
               </h3>
 
               {/* يباع بواسطة */}
-              <DetailItem label="يباع بواسطة" value="قالبك" />
+              {/* <DetailItem label="يباع بواسطة" value="قالبك" /> */}
 
               {/* نوع المنتج */}
-              <DetailItem label="نوع المنتج" value="منتج رقمي" />
+              {/* <DetailItem label="نوع المنتج" value="منتج رقمي" /> */}
 
               {/* طريقة الاستلام - ضرورية جداً لـ Paddle */}
               <DetailItem
                 label="طريقة الاستلام"
-                value="تسليم فوري (تنزيل)"
+                value="تنزيل فوري"
               />
 
               {/* ما الذي ستحصل عليه؟ */}
               <DetailItem
-                label="محتويات الملف"
-                value="أكواد HTML,CSS,JavaScript"
+                label="انواع الملف"
+                value=" ملف HTML و ملفJS"
               />
 
               {/*  التجاوب */}
@@ -599,6 +599,7 @@ function CollapsibleSection({
 
 // مكون قسم المنتج
 // مكون قسم المنتج
+
 function ProductSection({
   title,
   content,
@@ -606,11 +607,83 @@ function ProductSection({
   title: string;
   content: string;
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      const lineHeight = parseFloat(getComputedStyle(contentRef.current).lineHeight);
+      const maxHeight = lineHeight * 7;
+      const actualHeight = contentRef.current.scrollHeight;
+      
+      setShowButton(actualHeight > maxHeight + 6); // 5px هامش للدقة
+    }
+  }, [content]);
+
   return (
     <div className="space-y-3">
       <h2 className="text-xl font-medium text-gray-900">{title}</h2>
-      <div className="bg-[#FCFCFC] rounded-xl p-6 text-gray-800 leading-relaxed text-lg whitespace-pre-line">
-        {content}
+      <div className="relative">
+        <div
+          ref={contentRef}
+          className="bg-[#FCFCFC] rounded-xl p-6 text-gray-800 text-lg whitespace-pre-line overflow-hidden transition-all duration-300"
+          style={{
+            lineHeight: '1.75rem',
+            maxHeight: !isExpanded && showButton ? 'calc(1.75rem * 7)' : 'none',
+            WebkitMaskImage: !isExpanded && showButton
+              ? 'linear-gradient(to bottom, black 70%, transparent 100%)'
+              : 'none',
+            maskImage: !isExpanded && showButton
+              ? 'linear-gradient(to bottom, black 70%, transparent 100%)'
+              : 'none',
+          }}
+        >
+          {content}
+        </div>
+
+        {showButton && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="mt-3 px-4 text-blue-600 hover:text-blue-700 font-medium text-base transition-colors flex items-center gap-1"
+          >
+            {isExpanded ? (
+              <>
+                عرض أقل
+                <svg
+                  className="w-4 h-4 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 15l7-7 7 7"
+                  />
+                </svg>
+              </>
+            ) : (
+              <>
+                عرض المزيد
+                <svg
+                  className="w-4 h-4 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

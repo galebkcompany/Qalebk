@@ -22,12 +22,14 @@ const PLATFORM_OPTIONS = [
   { value: "كل المواقع التي تدعم الحقن", label: "all" },
 ];
 
-const PRODUCT_TYPES = [
-  { value: "section", label: "Section", },
-];
+const PRODUCT_TYPES = [{ value: "section", label: "Section" }];
 
 // مكون Tabs البسيط
-const Tabs = ({ tabs }: { tabs: Array<{ label: string; value: string; content: React.ReactNode }> }) => {
+const Tabs = ({
+  tabs,
+}: {
+  tabs: Array<{ label: string; value: string; content: React.ReactNode }>;
+}) => {
   const [active, setActive] = useState(tabs[0]?.value || "");
 
   return (
@@ -63,8 +65,9 @@ export default function AddProduct() {
   const [platforms, setPlatforms] = useState<string[]>([]);
   const [installation, setInstallation] = useState("");
   const [customizableFields, setCustomizableFields] = useState(
-    'يمكن تخصيص الألوان، النصوص، الخطوط، حجم العناصر، وترتيب المحتوى بما يتناسب مع هوية مشروعك.'
+    "يمكن تخصيص الألوان، النصوص، الخطوط، حجم العناصر، وترتيب المحتوى بما يتناسب مع هوية مشروعك.",
   );
+  const [previewCode, setPreviewCode] = useState("");
 
   const [slug, setSlug] = useState("");
   const [image, setImage] = useState<File | null>(null);
@@ -126,11 +129,11 @@ export default function AddProduct() {
       formData.append("file", image);
       formData.append(
         "upload_preset",
-        process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!
+        process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
       );
       const cloudRes = await axios.post(
         process.env.NEXT_PUBLIC_CLOUDINARY_URL!,
-        formData
+        formData,
       );
       const image_url = cloudRes.data.secure_url;
       const image_public_id = cloudRes.data.public_id;
@@ -148,7 +151,8 @@ export default function AddProduct() {
             product_type: productType,
             image_url,
             image_public_id,
-            preview_url: productType === "section" ? "/preview/section" : "/preview/page",
+            preview_url:
+              productType === "section" ? "/preview/section" : "/preview/page",
             price_id: priceId,
             is_featured: isFeatured,
             platforms,
@@ -176,11 +180,14 @@ export default function AddProduct() {
           product_id: productData.id,
           type: "script_embed",
           code: scriptEmbedCode,
+          preview: previewCode || scriptEmbedCode,
         });
       }
 
       if (codes.length > 0) {
-        const { error: codesError } = await supabase.from("codes").insert(codes);
+        const { error: codesError } = await supabase
+          .from("codes")
+          .insert(codes);
 
         if (codesError) throw codesError;
       }
@@ -194,12 +201,17 @@ export default function AddProduct() {
       setPriceId("9.49");
       setIsFeatured(false);
       setPlatforms([]);
-      setInstallation("لأصحاب المتاجر و المواقع الجاهزه يمكنك نسخ الكود وتضمينه في متجرك او موقعك مباشره خلال دقائق فقط بدون معرفه بالبرمجه اما المبرمجين واصاحب المواقع المخصصه يمكنهم استخادم الكود مباشره داخل مشروعهم");
-      setCustomizableFields('يمكن تخصيص الألوان، النصوص، الخطوط، حجم العناصر، وترتيب المحتوى والصور بما يتناسب مع هوية متجرك او موقعك.');
+      setInstallation(
+        "لأصحاب المتاجر و المواقع الجاهزه يمكنك نسخ الكود وتضمينه في متجرك او موقعك مباشره خلال دقائق فقط بدون معرفه بالبرمجه اما المبرمجين واصاحب المواقع المخصصه يمكنهم استخادم الكود مباشره داخل مشروعهم",
+      );
+      setCustomizableFields(
+        "يمكن تخصيص الألوان، النصوص، الخطوط، حجم العناصر، وترتيب المحتوى والصور بما يتناسب مع هوية متجرك او موقعك.",
+      );
       setSlug("");
       setImage(null);
       setHtmlCssCode("");
       setScriptEmbedCode("");
+      setPreviewCode("");
     } catch (error: any) {
       console.error("❌ خطأ:", error);
       alert("حدث خطأ: " + (error.message || "خطأ غير معروف"));
@@ -212,11 +224,15 @@ export default function AddProduct() {
     <div className="min-h-screen bg-white to-gray-100 p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">إضافة منتج جديد</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">
+            إضافة منتج جديد
+          </h1>
 
           {/* صورة المنتج */}
           <div className="mb-6">
-            <label className="block font-medium text-gray-700 mb-2">صورة المنتج *</label>
+            <label className="block font-medium text-gray-700 mb-2">
+              صورة المنتج *
+            </label>
             <input
               className="w-full bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-4 hover:border-gray-400 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-black file:text-white hover:file:bg-gray-800"
               type="file"
@@ -224,13 +240,17 @@ export default function AddProduct() {
               onChange={(e) => setImage(e.target.files?.[0] || null)}
             />
             {image && (
-              <p className="mt-2 text-sm text-green-600">✓ تم اختيار: {image.name}</p>
+              <p className="mt-2 text-sm text-green-600">
+                ✓ تم اختيار: {image.name}
+              </p>
             )}
           </div>
 
           {/* اسم المنتج */}
           <div className="mb-6">
-            <label className="block font-medium text-gray-700 mb-2">عنوان المنتج *</label>
+            <label className="block font-medium text-gray-700 mb-2">
+              عنوان المنتج *
+            </label>
             <input
               type="text"
               className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-black focus:outline-none transition-colors"
@@ -241,7 +261,9 @@ export default function AddProduct() {
 
           {/* نوع المنتج */}
           <div className="mb-6">
-            <label className="block font-medium text-gray-700 mb-2">نوع المنتج *</label>
+            <label className="block font-medium text-gray-700 mb-2">
+              نوع المنتج *
+            </label>
             <div className="grid grid-cols-2 gap-4">
               {PRODUCT_TYPES.map((type) => (
                 <div
@@ -255,7 +277,6 @@ export default function AddProduct() {
                 >
                   <div className="text-center py-4">
                     <div className="font-semibold">{type.label}</div>
-                    
                   </div>
                 </div>
               ))}
@@ -264,7 +285,9 @@ export default function AddProduct() {
 
           {/* الوصف الكامل */}
           <div className="mb-6">
-            <label className="block font-medium text-gray-700 mb-2">الوصف</label>
+            <label className="block font-medium text-gray-700 mb-2">
+              الوصف
+            </label>
             <textarea
               className="w-full border-2 border-gray-300 rounded-lg p-3 focus:border-black focus:outline-none transition-colors"
               rows={6}
@@ -275,7 +298,9 @@ export default function AddProduct() {
 
           {/* السعر */}
           <div className="mb-6">
-            <label className="block font-medium text-gray-700 mb-2">السعر *</label>
+            <label className="block font-medium text-gray-700 mb-2">
+              السعر *
+            </label>
             <select
               className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-black focus:outline-none transition-colors bg-white"
               value={priceId}
@@ -299,7 +324,10 @@ export default function AddProduct() {
               onChange={(e) => setIsFeatured(e.target.checked)}
               className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black"
             />
-            <label htmlFor="featured" className="font-medium text-gray-700 cursor-pointer">
+            <label
+              htmlFor="featured"
+              className="font-medium text-gray-700 cursor-pointer"
+            >
               عرض المنتج كمميز في الصفحة الرئيسية
             </label>
           </div>
@@ -320,7 +348,9 @@ export default function AddProduct() {
 
           {/* المنصات */}
           <div ref={dropdownRef} className="relative mb-6">
-            <label className="block font-medium text-gray-700 mb-2">المنصات المدعومة</label>
+            <label className="block font-medium text-gray-700 mb-2">
+              المنصات المدعومة
+            </label>
             <div
               onClick={() => setOpen(!open)}
               className="w-full min-h-[56px] border-2 border-gray-300 rounded-lg px-4 py-3 cursor-pointer flex flex-wrap gap-2 items-center hover:border-gray-400 transition-colors"
@@ -329,7 +359,9 @@ export default function AddProduct() {
                 <span className="text-gray-400">اختر المنصات المدعومة</span>
               )}
               {platforms.map((p) => {
-                const label = PLATFORM_OPTIONS.find((o) => o.value === p)?.label;
+                const label = PLATFORM_OPTIONS.find(
+                  (o) => o.value === p,
+                )?.label;
                 return (
                   <span
                     key={p}
@@ -360,7 +392,9 @@ export default function AddProduct() {
                       key={option.value}
                       onClick={() => {
                         if (selected) {
-                          setPlatforms(platforms.filter((p) => p !== option.value));
+                          setPlatforms(
+                            platforms.filter((p) => p !== option.value),
+                          );
                         } else {
                           setPlatforms([...platforms, option.value]);
                         }
@@ -381,7 +415,9 @@ export default function AddProduct() {
 
           {/* طريقة التركيب */}
           <div className="mb-6">
-            <label className="block font-medium text-gray-700 mb-2">طريقة التركيب</label>
+            <label className="block font-medium text-gray-700 mb-2">
+              طريقة التركيب
+            </label>
             <textarea
               className="w-full border-2 border-gray-300 rounded-lg p-3 focus:border-black focus:outline-none transition-colors"
               rows={4}
@@ -409,9 +445,8 @@ export default function AddProduct() {
         {/* قسم الأكواد */}
         <div className="bg-white rounded-xl shadow-lg p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-             الأكواد
+            الأكواد
           </h2>
-         
 
           <Tabs
             tabs={[
@@ -428,15 +463,7 @@ export default function AddProduct() {
                       rows={12}
                       value={htmlCssCode}
                       onChange={(e) => setHtmlCssCode(e.target.value)}
-                      placeholder={`<div class="countdown-timer">
-  <style>
-    .countdown-timer {
-      font-size: 2rem;
-      color: #333;
-    }
-  </style>
-  <div id="timer"></div>
-</div>`}
+                      placeholder={`كود HTML/CSS هنا...`}
                     />
                     {htmlCssCode && (
                       <p className="mt-2 text-sm text-green-600">
@@ -452,30 +479,46 @@ export default function AddProduct() {
                 content: (
                   <div>
                     <p className="text-sm text-gray-600 mb-3">
-                      نفس الكود لكن داخل وسم <code className="bg-gray-100 px-2 py-1 rounded">&lt;script&gt;</code> للتضمين السهل
+                      نفس الكود لكن داخل وسم{" "}
+                      <code className="bg-gray-100 px-2 py-1 rounded">
+                        &lt;script&gt;
+                      </code>{" "}
+                      للتضمين السهل
                     </p>
                     <textarea
                       className="w-full border-2 border-gray-300 rounded-lg p-4 focus:border-black focus:outline-none transition-colors font-mono text-sm"
                       rows={12}
                       value={scriptEmbedCode}
                       onChange={(e) => setScriptEmbedCode(e.target.value)}
-                      placeholder={`<script>
-  document.write(\`
-    <div class="countdown-timer">
-      <style>
-        .countdown-timer {
-          font-size: 2rem;
-          color: #333;
-        }
-      </style>
-      <div id="timer"></div>
-    </div>
-  \`);
-</script>`}
+                      placeholder={`كود السكريبت هنا...`}
                     />
                     {scriptEmbedCode && (
                       <p className="mt-2 text-sm text-green-600">
                         ✓ تم إدخال {scriptEmbedCode.length} حرف
+                      </p>
+                    )}
+                  </div>
+                ),
+              },
+              {
+                label: "كود المعاينة",
+                value: "preview",
+                content: (
+                  <div>
+                    <p className="text-sm text-gray-600 mb-3">
+                      الكود الذي سيظهر في صفحة المعاينة (يُنصح أن يكون نفس كود
+                      Script Embed)
+                    </p>
+                    <textarea
+                      className="w-full border-2 border-gray-300 rounded-lg p-4 focus:border-black focus:outline-none transition-colors font-mono text-sm"
+                      rows={12}
+                      value={previewCode}
+                      onChange={(e) => setPreviewCode(e.target.value)}
+                      placeholder={`كود المعاينه هنا...`}
+                    />
+                    {previewCode && (
+                      <p className="mt-2 text-sm text-green-600">
+                        ✓ تم إدخال {previewCode.length} حرف
                       </p>
                     )}
                   </div>

@@ -62,7 +62,6 @@ export default function FavoritesPage() {
                     className="
             w-full
             sm:w-80
-            aspect-[990/480]
             rounded-xl
             bg-gray-100
             object-cover

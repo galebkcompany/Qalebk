@@ -1,14 +1,15 @@
-import Image from "next/image";
-import Header from "./components/Header";
+// app/page.tsx
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import ProductCard from "./components/ProductCard"
 import { supabaseServer } from "@/app/lib/supabaseServer"
 
-
-
+export const dynamic = 'force-dynamic'; // فرض التحديث الديناميكي
+export const revalidate = 0;
 
 export default async function Home() {
+
+  
 
   const { data: products, error } = await supabaseServer
     .from("products")

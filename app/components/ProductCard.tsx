@@ -24,7 +24,7 @@ export default function ProductCard({ product }: { product: Product }) {
     >
       <div className="bg-white rounded-xl border border-gray-200  overflow-hidden hover:shadow-md transition">
         {/* Image */}
-        <div className="relative w-full aspect-[990/480] overflow-hidden bg-gray-100">
+        <div className="relative w-full overflow-hidden bg-gray-100">
           {product.is_featured && (
             <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 sm:px-3 rounded-full shadow-lg">
               <span>مميز</span>

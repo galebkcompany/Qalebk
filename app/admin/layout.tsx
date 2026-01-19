@@ -15,7 +15,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   // const { data: { user } } = await supabase.auth.getUser(token || '')
 
-  // if (!user || user.email !== 'admin@example.com') {
+  // if (!user || user.email !== 'galebkcompany@gmail.com') {
   //   redirect('/') // غير مسموح، أرسل إلى الصفحة الرئيسية
   // }
   return (

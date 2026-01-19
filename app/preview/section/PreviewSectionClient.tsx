@@ -41,22 +41,20 @@ export default function PreviewSection() {
     fetchCode();
   }, [productId]);
 
-  useEffect(() => {
-    if (!loading && injectionCode) {
-      // حقن الكود في الصفحة
-      const script = document.createElement("script");
-      script.innerHTML = injectionCode;
-      document.body.appendChild(script);
-
-      return () => {
-        // تنظيف عند unmount
-        document.body.removeChild(script);
-      };
+useEffect(() => {
+  if (!loading && injectionCode) {
+    // تنفيذ الكود مباشرة بدلاً من حقن script tag
+    try {
+      const executeCode = new Function(injectionCode);
+      executeCode();
+    } catch (error) {
+      console.error("Error executing injection code:", error);
     }
-  }, [loading, injectionCode]);
+  }
+}, [loading, injectionCode]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="main-header-bar bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">

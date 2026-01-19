@@ -321,7 +321,7 @@ export default function CheckoutPage() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">إتمام الطلب</h1>
-          <p className="text-gray-600">خطوة واحدة تفصلك عن الحصول على منتجك</p>
+          <p className="text-gray-600">خطوة واحدة تفصلك عن الحصول على قسمك الجديد</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
@@ -344,7 +344,7 @@ export default function CheckoutPage() {
                   <img
                     src={product.image_url}
                     alt={product.name}
-                    className="w-70 aspect-[990/480] rounded-xl overflow-hidden bg-gray-100 object-cover"
+                    className="w-70 rounded-xl overflow-hidden bg-gray-100 object-cover"
                   />
                 </div>
 
@@ -465,7 +465,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
                   <Check className="w-4 h-4 text-green-500" />
-                  <span>كود كامل جاهز للاستخدام</span>
+                  <span>سوف تحصل كامل الكود</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-700">
                   <Check className="w-4 h-4 text-green-500" />
