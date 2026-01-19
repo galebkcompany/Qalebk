@@ -29,6 +29,8 @@ export default function Footer() {
             <div className="flex items-center gap-4">
               <Link
                 href="https://www.youtube.com/@qalebk"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="border border-gray-500 h-12 w-12 flex items-center justify-center rounded-full hover:bg-gray-200 transition "
               >
                 <Image
@@ -42,6 +44,8 @@ export default function Footer() {
 
               <Link
                 href="https://www.tiktok.com/@qalebk"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="border border-gray-500 h-12 w-12 flex items-center justify-center rounded-full hover:bg-gray-200 transition"
               >
                 <Image
@@ -65,7 +69,10 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/section" className="hover:text-gray-500 transition">
+                <Link
+                  href="/section"
+                  className="hover:text-gray-500 transition"
+                >
                   أقسام جاهزة
                 </Link>
               </li>
@@ -92,7 +99,10 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="hover:text-gray-500 transition">
+                <Link
+                  href="/privacy"
+                  className="hover:text-gray-500 transition"
+                >
                   سياسة الخصوصية
                 </Link>
               </li>
@@ -102,12 +112,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/hosting" className="hover:text-gray-500 transition">
+                <Link
+                  href="/hosting"
+                  className="hover:text-gray-500 transition"
+                >
                   الاستضافة
                 </Link>
               </li>
               <li>
-                <Link href="/suppport" className="hover:text-gray-500 transition">
+                <Link
+                  href="/suppport"
+                  className="hover:text-gray-500 transition"
+                >
                   الدعم والمساعدة
                 </Link>
               </li>

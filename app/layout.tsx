@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import { Cairo } from "next/font/google";
 import { usePathname } from "next/navigation";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const cairo = Cairo({
   subsets: ["arabic"],
@@ -16,21 +17,21 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
   const pathname = usePathname();
-  const isPreview = pathname.startsWith('/preview')
-
+  const isPreview = pathname.startsWith("/preview");
 
   const showHeader =
     !pathname.startsWith("/admin") &&
     !pathname.startsWith("/checkout") &&
-      !isPreview
+    !isPreview;
 
   return (
     <html lang="ar" dir="rtl" className={cairo.variable}>
       <body className="font-cairo text-black">
-        {showHeader && <Header />}
-        {children}
+        <AuthProvider>
+          {showHeader && <Header />}
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
