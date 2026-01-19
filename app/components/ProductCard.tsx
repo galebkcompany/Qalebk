@@ -61,7 +61,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
             {/* Icons */}
             <div className="flex gap-3">
-              {product.platforms.includes("custom") && (
+              {product.platforms.includes("custom website") && (
                 <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                   <Image
                     src="/icons/web.svg"
@@ -73,7 +73,7 @@ export default function ProductCard({ product }: { product: Product }) {
                   />
                 </div>
               )}
-              {product.platforms.includes("salla") && (
+              {product.platforms.includes("Salla") && (
                 <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                   <Image
                     src="/icons/store.svg"

@@ -19,7 +19,6 @@ const PLATFORM_OPTIONS = [
   { value: "WooCommerce", label: "وي كميرس" },
   { value: "ExpandCart", label: "اكسباند كارد" },
   { value: "custom website", label: "مواقع مخصصة" },
-  { value: "كل المواقع التي تدعم الحقن", label: "all" },
 ];
 
 const PRODUCT_TYPES = [{ value: "section", label: "Section" }];

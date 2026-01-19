@@ -4,8 +4,8 @@ import Hero from "./components/Hero";
 import ProductCard from "./components/ProductCard"
 import { supabaseServer } from "@/app/lib/supabaseServer"
 
-export const dynamic = 'force-dynamic'; // فرض التحديث الديناميكي
-export const revalidate = 0;
+// export const dynamic = 'force-dynamic'; // فرض التحديث الديناميكي
+// export const revalidate = 0;
 
 export default async function Home() {
 
