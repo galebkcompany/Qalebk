@@ -11,42 +11,12 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
-  const [isSignUp, setIsSignUp] = useState(true); // تغيير إلى true لجعل إنشاء الحساب هو الافتراضي
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [isSignUp] = useState(true); // تغيير إلى true لجعل إنشاء الحساب هو الافتراضي
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { signInWithGoogle } = useAuth();
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      const { error } = isSignUp
-        ? await signUp(email, password)
-        : await signIn(email, password);
-
-      if (error) {
-        setError(error.message);
-      } else {
-        if (isSignUp) {
-          setError("تم إرسال رابط التأكيد إلى بريدك الإلكتروني");
-        } else {
-          onClose();
-          setEmail("");
-          setPassword("");
-        }
-      }
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleGoogleSignIn = async () => {
     setError("");
@@ -62,7 +32,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
       <div className="fixed inset-0 bg-gray-200/50 z-50 backdrop-blur-sm" />
 
       {/* النافذة المنبثقة */}
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl z-50 w-full max-w-lg mx-4">
+      <div className="fixed text-gray-900 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl z-50 w-full max-w-lg mx-4">
         {/* الرأس */}
         <div className="relative flex items-center p-6 border-b border-gray-200">
           <h2 className="absolute left-1/2 -translate-x-1/2 text-2xl font-medium">
@@ -179,21 +149,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             </svg>
             متابعة باستخدام Google
           </button>
-
-          {/* رابط التبديل بين تسجيل الدخول والتسجيل */}
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setError("");
-              }}
-              className="text-blue-600 hover:underline text-sm"
-            >
-              {isSignUp
-                ? "لديك حساب بالفعل؟ سجل الدخول"
-                : "ليس لديك حساب؟ أنشئ حساباً جديداً"}
-            </button>
-          </div>
         </div>
       </div>
     </>

@@ -107,7 +107,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/return" className="hover:text-gray-500 transition">
+                <Link href="/refund" className="hover:text-gray-500 transition">
                   سياسة الاسترجاع
                 </Link>
               </li>
