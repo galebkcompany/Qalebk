@@ -1,3 +1,5 @@
+import Footer from "../components/Footer";
+
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white text-black" dir="rtl">
@@ -64,6 +66,7 @@ export default function AboutPage() {
 
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

@@ -122,6 +122,15 @@ export default function Terms() {
 
             <section>
               <h2 className="text-2xl font-bold mb-4">
+                معالجة المدفوعات والضرائب
+              </h2>
+              <p className="text-gray-700">
+                يتم معالجة جميع عمليات الشراء على منصة 'قالبك' بواسطة Paddle.com. يعتبر Paddle هو تاجر السجل (Merchant of Record) لجميع طلباتنا. يوفر Paddle خدمة الاستفسارات المتعلقة بالدفع وخدمة العملاء المتعلقة بالفواتير.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">
                 إخلاء المسؤولية عن الأرباح
               </h2>
               <p className="text-gray-700">

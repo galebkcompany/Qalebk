@@ -5,8 +5,9 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Eye, Heart, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/app/lib/supabaseClient";
 import Footer from "@/app/components/Footer";
-
+import FaqSection from "@/app/components/FaqSection";
 
 interface Product {
   id: string;
@@ -25,6 +26,12 @@ interface Product {
   };
 }
 
+interface Review {
+  id: string;
+  rating: number;
+  review_text: string | null;
+  created_at: string;
+}
 
 export default function ProductPageClient({
   product,
@@ -34,8 +41,10 @@ export default function ProductPageClient({
   slug: string;
 }) {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+
   const router = useRouter();
 
   type AddToFavoriteState = "idle" | "loading" | "success";
@@ -53,53 +62,35 @@ export default function ProductPageClient({
     }));
   };
 
-  // في أعلى الكومبوننت، أضف البيانات الوهمية
-  const reviews = [
-    {
-      id: "1",
-      rating: 5,
-      comment:
-        "منتج رائع جداً! سهل التركيب ويعمل بشكل ممتاز على متجري. أنصح به بشدة",
-      created_at: "2024-01-15T10:30:00Z",
-    },
-    {
-      id: "2",
-      rating: 4,
-      comment: "جيد جداً، لكن كنت أتمنى المزيد من خيارات التخصيص في الألوان",
-      created_at: "2024-01-10T14:20:00Z",
-    },
-    {
-      id: "3",
-      rating: 5,
-      comment: "ممتاز! زاد من معدل التحويل في متجري بشكل ملحوظ. شكراً للفريق",
-      created_at: "2024-01-08T09:15:00Z",
-    },
-    {
-      id: "4",
-      rating: 4,
-      comment: "منتج جيد وسعر مناسب",
-      created_at: "2024-01-05T16:45:00Z",
-    },
-  ];
+  useEffect(() => {
+    if (!product?.id) return;
+
+    const fetchReviews = async () => {
+      setReviewsLoading(true);
+
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("id, rating, review_text, created_at")
+        .eq("product_id", product.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("فشل جلب التقييمات:", error);
+        setReviews([]);
+      } else {
+        setReviews(data || []);
+      }
+
+      setReviewsLoading(false);
+    };
+
+    fetchReviews();
+  }, [product.id]);
 
   const averageRating =
     reviews.length > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : 0;
-
-  useEffect(() => {
-    if (showAllReviews) {
-      // منع تحرك الصفحة الخلفية
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    // تنظيف عند إزالة الكومبوننت
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [showAllReviews]);
 
   const handleBuyNow = () => {
     // الانتقال مباشرة إلى صفحة الدفع مع product_id
@@ -191,10 +182,7 @@ export default function ProductPageClient({
               />
             </div>
             {/* تفاصيل المنتج */}
-            <ProductSection
-              title="وصف القسم"
-              content={product.description}
-            />
+            <ProductSection title="وصف القسم" content={product.description} />
             {/* الحقول القابلة للتخصيص */}
             {product.customizable_fields?.trim() && (
               <ProductSection
@@ -229,12 +217,37 @@ export default function ProductPageClient({
                 content={product.installation_guide}
               />
             )}
+
+            {reviews.length === 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-xl font-medium text-gray-900">
+                    تقييمات المنتج (0)
+                  </h2>
+                  <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
+                    <span className="text-2xl font-base text-black">
+                      {averageRating.toFixed(1)}
+                    </span>
+                    <img src="/icons/star.svg" alt="star" className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
+                  <p className="text-gray-700 font-medium">
+                    لا توجد تقييمات بعد
+                  </p>
+                  <p className="text-sm text-gray-500 mt-4  ">
+                    كن أول من يشارك تجربته مع هذا المنتج
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* التقييمات */}
             {reviews && reviews.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <h2 className="text-xl font-medium text-gray-900">
-                    تقييمات المنتج ({reviews.length})
+                    تقييمات القسم ({reviews.length})
                   </h2>
                   <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
                     <span className="text-2xl font-base text-black">
@@ -282,7 +295,7 @@ export default function ProductPageClient({
                         </span>
                       </div>
                       <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {review.comment}
+                        {review.review_text || "—"}
                       </p>
                     </div>
                   ))}
@@ -484,9 +497,7 @@ export default function ProductPageClient({
 
             {/* تفاصيل إضافية */}
             <div className="space-y-3 border-t border-gray-200 pt-7">
-              <h3 className="font-semibold text-black text-lg">
-                تفاصيل القسم
-              </h3>
+              <h3 className="font-semibold text-black text-lg">تفاصيل القسم</h3>
 
               {/* يباع بواسطة */}
               {/* <DetailItem label="يباع بواسطة" value="قالبك" /> */}
@@ -495,16 +506,10 @@ export default function ProductPageClient({
               <DetailItem label="نوع المنتج" value="منتج رقمي (Section)" />
 
               {/* طريقة الاستلام - ضرورية جداً لـ Paddle */}
-              <DetailItem
-                label="طريقة الاستلام"
-                value="تحميل فوري"
-              />
+              <DetailItem label="طريقة الاستلام" value="تحميل فوري" />
 
               {/* ما الذي ستحصل عليه؟ */}
-              <DetailItem
-                label="انواع الملف"
-                value=" ملف HTML و ملفJS"
-              />
+              <DetailItem label="انواع الملف" value=" ملف HTML و ملفJS" />
 
               {/*  التجاوب */}
               <DetailItem
@@ -525,12 +530,25 @@ export default function ProductPageClient({
               />
 
               {/* الأسئلة الشائعة */}
-              <CollapsibleSection
-                id="faq"
+              <FaqSection
                 title="الأسئلة الشائعة"
-                content="هنا يمكن إضافة الأسئلة الشائعة والإجابات عليها"
-                isOpen={openSections["faq"] || false}
-                onToggle={() => toggleSection("faq")}
+                faqs={[
+                  {
+                    question: "هل المنتج يعمل على جميع المنصات؟",
+                    answer:
+                      "نعم، المنتج متوافق مع جميع المنصات الرئيسية المذكورة في قسم المنصات المدعومة. ويعمل ايضعا على المنصات التي تدعم الحقن البرمجي.",
+                  },
+                  {
+                    question: "هل يمكن استرجاع المنتج بعد الشراء؟",
+                    answer:
+                      "بما أن المنتج رقمي ويتم تحميله فورًا، لا يمكن استرجاعه بعد الشراء. الا في حال وجود مشكلة تقنية",
+                  },
+                  {
+                    question: "هل أحتاج خبرة برمجية لتركيبه؟",
+                    answer:
+                      "لا، المنتج مصمم يكون سهل التركيب  وليعمل مباشرة على متجرك، ويتم توفير دليل تركيب واضح.",
+                  },
+                ]}
               />
 
               {/* تواصل مع الدعم */}
@@ -538,7 +556,7 @@ export default function ProductPageClient({
                 href="/support"
                 className="w-full bg-gray-50 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-5 rounded-full transition-colors duration-200 text-sm"
               >
-                هل تحتاج الى المساعده؟
+               هل تحتاج الى المساعده؟ تواصل معنا
               </Link>
             </div>
           </div>
@@ -615,10 +633,12 @@ function ProductSection({
 
   useEffect(() => {
     if (contentRef.current) {
-      const lineHeight = parseFloat(getComputedStyle(contentRef.current).lineHeight);
+      const lineHeight = parseFloat(
+        getComputedStyle(contentRef.current).lineHeight,
+      );
       const maxHeight = lineHeight * 7;
       const actualHeight = contentRef.current.scrollHeight;
-      
+
       setShowButton(actualHeight > maxHeight + 6); // 5px هامش للدقة
     }
   }, [content]);
@@ -631,14 +651,16 @@ function ProductSection({
           ref={contentRef}
           className="bg-[#FCFCFC] rounded-xl p-6 text-gray-800 text-lg whitespace-pre-line overflow-hidden transition-all duration-300"
           style={{
-            lineHeight: '1.75rem',
-            maxHeight: !isExpanded && showButton ? 'calc(1.75rem * 7)' : 'none',
-            WebkitMaskImage: !isExpanded && showButton
-              ? 'linear-gradient(to bottom, black 70%, transparent 100%)'
-              : 'none',
-            maskImage: !isExpanded && showButton
-              ? 'linear-gradient(to bottom, black 70%, transparent 100%)'
-              : 'none',
+            lineHeight: "1.75rem",
+            maxHeight: !isExpanded && showButton ? "calc(1.75rem * 7)" : "none",
+            WebkitMaskImage:
+              !isExpanded && showButton
+                ? "linear-gradient(to bottom, black 70%, transparent 100%)"
+                : "none",
+            maskImage:
+              !isExpanded && showButton
+                ? "linear-gradient(to bottom, black 70%, transparent 100%)"
+                : "none",
           }}
         >
           {content}

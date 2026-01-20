@@ -69,7 +69,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/section"
+                  href="/categories/sections"
                   className="hover:text-gray-500 transition"
                 >
                   أقسام جاهزة
@@ -120,7 +120,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/suppport"
+                  href="/support"
                   className="hover:text-gray-500 transition"
                 >
                   الدعم والمساعدة

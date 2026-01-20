@@ -114,6 +114,7 @@ export async function GET(request: NextRequest) {
     // 7️⃣ إرجاع البيانات
     return NextResponse.json({
       product: {
+        id: order.product.id,
         name: order.product.name,
         image_url: order.product.image_url,
         download_code: downloadCode,

@@ -15,6 +15,7 @@ import {
 
 type DeliveryData = {
   product: {
+    id: string;
     name: string;
     image_url: string;
     code: string;
@@ -45,9 +46,11 @@ export default function DeliveryPage() {
   const [actionError, setActionError] = useState("");
   const [timeLeft, setTimeLeft] = useState<number>(0);
 
-  // حالات التقييم
+    // حالات التقييم
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   // حالات النوافذ المنبثقة (Modals)
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -131,6 +134,44 @@ export default function DeliveryPage() {
     }
   };
 
+const handleSubmitReview = async () => {
+  if (!rating) {
+    setActionError("الرجاء اختيار تقييم");
+    return;
+  }
+
+  setIsSubmittingReview(true);
+  setActionError("");
+
+  try {
+    const sessionId = localStorage.getItem(`session_${token}`);
+
+    const response = await fetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        rating,
+        review_text: review.trim() || null,
+        token,
+        session_id: sessionId,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "فشل إرسال التقييم");
+    }
+
+    setReviewSubmitted(true);
+  } catch (err: any) {
+    setActionError(err.message || "حدث خطأ أثناء إرسال التقييم");
+  } finally {
+    setIsSubmittingReview(false);
+  }
+};
+
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -165,7 +206,6 @@ export default function DeliveryPage() {
                 src={data.product.image_url}
                 className="w-full
             sm:w-80
-            aspect-[990/480]
             rounded-xl
             bg-gray-100
             object-cover"
@@ -323,12 +363,20 @@ export default function DeliveryPage() {
           {/* تقييم المنتج */}
           <div className="bg-white p-6 border border-gray-200">
             <h3 className="font-bold text-lg mb-4">تقييم المنتج</h3>
+            
+            {reviewSubmitted && (
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm text-center font-medium">
+                ✓ تم إرسال تقييمك بنجاح
+              </div>
+            )}
+            
             <div className="flex justify-center gap-2 mb-4">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
                   onClick={() => setRating(star)}
                   className="transition-transform hover:scale-110"
+                  disabled={isSubmittingReview}
                 >
                   <img
                     src={
@@ -345,9 +393,14 @@ export default function DeliveryPage() {
               onChange={(e) => setReview(e.target.value)}
               placeholder="اكتب رأيك هنا..."
               className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-[100px] resize-none"
+              disabled={isSubmittingReview}
             />
-            <button className="w-full mt-3 bg-black text-white py-2 rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors">
-              إرسال التقييم
+            <button 
+              onClick={handleSubmitReview}
+              disabled={isSubmittingReview || !rating}
+              className="w-full mt-3 bg-black text-white py-2 rounded-lg text-sm font-bold hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              {isSubmittingReview ? "جاري الإرسال..." : "إرسال التقييم"}
             </button>
           </div>
 

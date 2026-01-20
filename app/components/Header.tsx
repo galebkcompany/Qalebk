@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import LoginModal from "@/app/components/LoginModal";
 
+
 export default function Header() {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
