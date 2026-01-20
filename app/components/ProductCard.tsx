@@ -52,10 +52,10 @@ export default function ProductCard({ product }: { product: Product }) {
             {/* Price */}
             <div className="flex items-center gap-3">
               <span className="font-bold text-xl text-green-600">
-                ${discountedPrice.toFixed(2)}
+                SAR {discountedPrice.toFixed(2)}
               </span>
               <span className="text-gray-400 text-sm line-through">
-                ${originalPrice.toFixed(2)}
+                SAR {originalPrice.toFixed(2)}
               </span>
             </div>
 
