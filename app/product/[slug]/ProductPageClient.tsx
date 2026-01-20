@@ -379,7 +379,7 @@ export default function ProductPageClient({
                               </span>
                             </div>
                             <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                              {review.comment}
+                              {review.review_text}
                             </p>
                           </div>
                         ))}
