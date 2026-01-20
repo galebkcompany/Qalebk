@@ -1,3 +1,5 @@
+// app/checkout/page.tsx
+
 import { Suspense } from "react";
 import CheckoutPageClient from "./CheckoutPageClient";
 

@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       .select(`
         *,
         prices!inner (
-          price_id,
+          variant_id,
           amount,
           currency
         )
@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (productError || !product) {
+      console.error('Product fetch error:', productError);
       return NextResponse.json(
         { error: 'المنتج غير موجود' },
         { status: 404 }
@@ -56,11 +57,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // إرجاع معلومات الطلب
+    console.log('✅ Order created successfully:', {
+      order_id: order.id,
+      variant_id: product.prices.variant_id
+    });
+
+    // إرجاع معلومات الطلب - variant_id بدلاً من price_id
     return NextResponse.json({
       order_id: order.id,
       delivery_token: order.delivery_token,
-      price_id: product.prices.price_id,
+      variant_id: product.prices.variant_id, // ✅ هذا هو التغيير المهم
       amount: product.prices.amount,
       currency: product.prices.currency,
     });

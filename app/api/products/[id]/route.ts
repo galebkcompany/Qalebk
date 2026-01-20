@@ -25,7 +25,7 @@ export async function GET(
           amount,
           currency,
           price_label,
-          price_id
+          variant_id
         )
       `)
       .eq('id', id)

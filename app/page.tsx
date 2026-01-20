@@ -19,7 +19,7 @@ export default async function Home() {
       name,
       slug,
       image_url,
-      price_id,
+      variant_id,
       platforms,
       is_featured,
       prices (
