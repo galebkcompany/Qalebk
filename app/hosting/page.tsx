@@ -1,4 +1,5 @@
 import Footer from "@/app/components/Footer";
+import Link from "next/link";
 
 
 export default function Hosting() {
@@ -198,7 +199,13 @@ export default function Hosting() {
           <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
             <h2 className="text-xl font-bold mb-3">للتواصل معنا</h2>
             <p className="text-gray-700">
-              لأي استفسارات حول خدمة الاستضافة أو اتفاقية SLA، يرجى التواصل معنا عبر: <span className="font-semibold">support@qalebk.com</span>
+              لأي استفسارات حول خدمة الاستضافة أو اتفاقية SLA، يرجى التواصل معنا عبر: {" "}
+                <Link 
+                  href="/support" 
+                  className="font-semibold text-blue-600 hover:underline"
+                >
+                  qalebk.com/support
+                </Link>
             </p>
           </section>
         </div>

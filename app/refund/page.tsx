@@ -1,5 +1,5 @@
 import Footer from "@/app/components/Footer";
-
+import Link from "next/link";
 
 export default function Refund() {
   return (
@@ -53,7 +53,13 @@ export default function Refund() {
           <section>
             <h2 className="text-2xl font-bold mb-4">عملية طلب الاسترجاع</h2>
             <p className="text-gray-700 leading-relaxed">
-              يجب على العميل تقديم طلب الاسترجاع عبر البريد الإلكتروني إلى <span className="font-semibold">support@qalebk.com</span> مع تقديم الأدلة الكافية على الخلل. ستقوم فريق قالبك بفحص الطلب والرد خلال 5 أيام عمل.
+              يجب على العميل تقديم طلب الاسترجاع عبر التواصل مع فريق الدعم <span className="font-semibold">{" "}
+                <Link 
+                  href="/support" 
+                  className="font-semibold text-blue-600 hover:underline"
+                >
+                  qalebk.com/support
+                </Link></span> مع تقديم الأدلة الكافية على الخلل. ستقوم فريق قالبك بفحص الطلب والرد خلال 5 أيام عمل.
             </p>
           </section>
 
@@ -114,7 +120,13 @@ export default function Refund() {
           <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
             <h2 className="text-xl font-bold mb-3">للتواصل معنا</h2>
             <p className="text-gray-700">
-              لأي استفسارات حول سياسة الاسترجاع أو لتقديم طلب استرجاع، يرجى التواصل معنا عبر: <span className="font-semibold">support@qalebk.com</span>
+              لأي استفسارات حول سياسة الاسترجاع أو لتقديم طلب استرجاع، يرجى التواصل معنا عبر: {" "}
+                <Link 
+                  href="/support" 
+                  className="font-semibold text-blue-600 hover:underline"
+                >
+                  qalebk.com/support
+                </Link>
             </p>
           </section>
         </div>

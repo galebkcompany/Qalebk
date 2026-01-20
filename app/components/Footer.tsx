@@ -110,14 +110,14 @@ export default function Footer() {
                   سياسة الاسترجاع
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/hosting"
                   className="hover:text-gray-500 transition"
                 >
                   الاستضافة
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   href="/support"

@@ -1,4 +1,5 @@
 import Footer from "@/app/components/Footer";
+import Link from "next/link";
 
 export default function Terms() {
   return (
@@ -50,14 +51,6 @@ export default function Terms() {
                     تسليم فوري بعد إتمام عملية الدفع.
                   </p>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">الاستضافة</h3>
-                  <p className="text-gray-700">
-                    خدمة إضافية بقيمة 0.99$ سنوياً تشمل استضافة صور العميل على
-                    سيرفرات Cloudflare R2 السحابية وتوليد كود جاهز بالروابط
-                    المحدثة.
-                  </p>
-                </div>
               </div>
             </section>
 
@@ -68,31 +61,76 @@ export default function Terms() {
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
                 الكود المشترى من قالبك مخصص للاستخدام الشخصي والحصري للعميل فقط.
-                يحق للعميل استخدام الكود في متجره او موقعه فقط . يُمنع منعاً
-                باتاً:
+                يحق للعميل استخدام الكود في متجره او موقعه فقط .
               </p>
-              <ul className="space-y-2 mr-6 text-gray-700">
-                <li className="flex items-start">
-                  <span className="ml-3 font-bold">•</span>
-                  <span>إعادة بيع الكود أو أي جزء منه لأطراف ثالثة.</span>
-                </li>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold mb-4">
+                حقوق الملكية الفكرية والترخيص
+              </h2>
+              <p className="text-gray-700 leading-relaxed">
+                جميع المنتجات، الأكواد البرمجية،
+                التصاميم، والشعارات المعروضة على منصة "قالبك" هي ملكية فكرية
+                حصرية للمنصة ومحمية بموجب قوانين حقوق النشر الدولية.
+              </p>
+              <p className="text-gray-700 leading-relaxed mt-2">
+                عند شرائك لأي منتج من "قالبك"، فإنك لا تشتري ملكية الكود نفسه،
+                بل تشتري "ترخيص استخدام" (License to Use) يمنحك الحقوق التالية:
+              </p>
+
+              <ul className="space-y-2 mr-6 mt-2 text-gray-700">
                 <li className="flex items-start">
                   <span className="ml-3 font-bold">•</span>
                   <span>
-                    توزيع الكود بشكل مجاني أو تجاري دون تصريح كتابي من قالبك.
+                    {" "}
+                    1-يحق لك استخدام المنتج في مشروع شخصي أو تجاري واحد.
                   </span>
                 </li>
                 <li className="flex items-start">
                   <span className="ml-3 font-bold">•</span>
-                  <span>نسخ الكود أو تعديله بهدف إعادة بيعه تحت اسم آخر.</span>
+                  <span>2-يحق لك تعديل الكود ليناسب احتياجاتك.</span>
+                </li>
+              </ul>
+
+              <p className="text-gray-700 font-bold leading-relaxed mt-4">
+                المحظورات:
+              </p>
+              <ul className="space-y-2 mr-6 mt-2 text-gray-700">
+                <li className="flex items-start">
+                  <span className="ml-3 font-bold">•</span>
+                  <span>
+                    1-يمنع منعاً باتاً إعادة بيع، توزيع، أو مشاركة الكود المصدري
+                    (Source Code) مع أي طرف ثالث مجاناً أو بمقابل.
+                  </span>
                 </li>
                 <li className="flex items-start">
                   <span className="ml-3 font-bold">•</span>
                   <span>
-                    يُمنع استخدام الكود في أكثر من متجر واحد لكل عملية شراء. إذا
-                    كنت مصمماً، يجب شراء ترخيص منفصل لكل عميل او التواصل مع
-                    المالك للحصول على ترخيص تجاري.
+                    2-لا يحق لك دمج المنتج في منتج آخر يتم بيعه كقالب أو أداة
+                    تصميم (Reselling as a template).
                   </span>
+                </li>
+              </ul>
+
+              <p className="text-gray-700 leading-relaxed mt-4">
+                أي انتهاك لهذه الشروط يعرضك للمسائلة القانونية وإلغاء الترخيص
+                فوراً دون استرداد للأموال.
+              </p>
+            </section>
+
+
+            {/* Delivery Terms */}
+            <section>
+              <h2 className="text-2xl font-bold mb-4">التسليم والوصول</h2>
+              <p className="text-gray-700 leading-relaxed">
+                يتم تسليم المنتجات إلكترونياً فور إتمام الدفع بنجاح عبر رابط مباشر 
+                
+                </p>
+              <ul className="list-disc list-inside mt-2 text-gray-700">
+                <li>
+                  نحتفظ بالحق في إيقاف رابط التحميل في حال رصدنا نشاطاً مشبوهاً
+                  (مثل مشاركة الرابط علنياً).
                 </li>
               </ul>
             </section>
@@ -110,6 +148,8 @@ export default function Terms() {
               </p>
             </section>
 
+            
+
             {/* Legal Compliance */}
             <section>
               <h2 className="text-2xl font-bold mb-4">الامتثال للقوانين</h2>
@@ -119,6 +159,8 @@ export default function Terms() {
                 قانونية أو تنتهك حقوق الملكية الفكرية للآخرين.
               </p>
             </section>
+
+            
 
             <section>
               <h2 className="text-2xl font-bold mb-4">
@@ -180,8 +222,13 @@ export default function Terms() {
             <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
               <h2 className="text-xl font-bold mb-3">للتواصل معنا</h2>
               <p className="text-gray-700">
-                لأي استفسارات حول شروط الاستخدام، يرجى التواصل معنا عبر:{" "}
-                <span className="font-semibold">support@qalebk.com</span>
+                لأي استفسارات حول شروط الاستخدام، يرجى التواصل معنا عبر صفحة الدعم الفني:{" "}
+                <Link 
+                  href="/support" 
+                  className="font-semibold text-blue-600 hover:underline"
+                >
+                  qalebk.com/support
+                </Link>
               </p>
             </section>
 

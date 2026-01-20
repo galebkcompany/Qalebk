@@ -618,7 +618,6 @@ function CollapsibleSection({
 }
 
 // مكون قسم المنتج
-// مكون قسم المنتج
 
 function ProductSection({
   title,
