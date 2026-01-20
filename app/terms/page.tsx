@@ -124,8 +124,12 @@ export default function Terms() {
               <h2 className="text-2xl font-bold mb-4">
                 معالجة المدفوعات والضرائب
               </h2>
-              <p className="text-gray-700">
-                يتم معالجة جميع عمليات الشراء على منصة 'قالبك' بواسطة Paddle.com. يعتبر Paddle هو تاجر السجل (Merchant of Record) لجميع طلباتنا. يوفر Paddle خدمة الاستفسارات المتعلقة بالدفع وخدمة العملاء المتعلقة بالفواتير.
+              <p className="text-gray-700 leading-relaxed">
+                يتم معالجة جميع عمليات الشراء على منصة 'قالبك' بواسطة{" "}
+                <span className="font-semibold">Lemon Squeezy</span>. يعتبر
+                Lemon Squeezy هو تاجر السجل (Merchant of Record) لجميع طلباتنا،
+                وهو المسؤول عن معالجة المدفوعات، الضرائب، وخدمة العملاء المتعلقة
+                بالفواتير.
               </p>
             </section>
 

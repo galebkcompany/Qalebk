@@ -491,7 +491,7 @@ export default function CheckoutPage() {
                   <Lock size={14} className="text-green-600" />
                   <p className="text-xs text-gray-400">
                     المدفوعات مؤمنة بواسطة{" "}
-                    <span className="font-semibold text-gray-500">Paddle</span>
+                    <span className="font-semibold text-gray-500">Lemon Squeezy</span>
                   </p>
                 </div>
                 <div>

@@ -63,7 +63,7 @@ export default function Privacy() {
                   </li>
                   <li className="flex items-start">
                     <span className="ml-2">•</span>
-                    <span>معلومات الدفع (يتم معالجتها بواسطة Paddle ولا نحتفظ بها).</span>
+                    <span>معلومات الدفع (يتم معالجتها بواسطة Lemon Squeezy ولا نحتفظ بها).</span>
                   </li>
                   <li className="flex items-start">
                     <span className="ml-2">•</span>
@@ -142,7 +142,7 @@ export default function Privacy() {
             <div className="space-y-3 mr-6">
               <div>
                 <h3 className="font-semibold text-gray-900">مع مزودي الخدمات</h3>
-                <p className="text-gray-700">مثل Paddle (معالج الدفع) و Cloudflare (مزود الاستضافة) لتقديم الخدمات.</p>
+                <p className="text-gray-700">مثل Lemon Squeezy (معالج الدفع) و Cloudflare (مزود الاستضافة) لتقديم الخدمات.</p>
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">الامتثال القانوني</h3>
