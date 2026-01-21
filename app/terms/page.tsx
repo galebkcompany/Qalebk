@@ -1,9 +1,9 @@
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'شروط الاستخدام - قالبك',
+  title: "شروط الاستخدام - قالبك",
 };
 
 export default function Terms() {
@@ -24,7 +24,9 @@ export default function Terms() {
             {/* Introduction */}
             <section>
               <h2 className="text-2xl font-bold mb-4">مقدمة</h2>
+              
               <p className="text-gray-700 leading-relaxed mb-4">
+                
                 قالبك هو سوق رقمي رائد متخصص في توفير أقسام واجهة مستخدم (UI
                 Sections) برمجية جاهزة (تعتمد على HTML, CSS, JavaScript) مصممة
                 خصيصاً للمتاجر والمواقع الإلكترونية. تهدف المنصة إلى تمكين أصحاب
@@ -32,6 +34,14 @@ export default function Terms() {
                 بالأتمتة الكاملة، حيث يتم تسليم الأكواد والملفات الرقمية للعميل
                 فوراً بعد إتمام عملية الشراء مباشرة.{" "}
               </p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                  <span className="font-bold text-gray-700">
+                    {" "}
+                    نقر ونؤكد أن جميع الأكواد والتصاميم المعروضة هي من تطويرنا
+                    الخاص وحصرية لمنصة "قالبك"، ونحن المالك الوحيد والأساسي لهذه
+                    المنتجات، ولا نسمح لبائعين خارجيين بعرض منتجاتهم عبر منصتنا.
+                  </span>
+                </p>
               <p className="text-gray-700 leading-relaxed">
                 يرحب بك قالبك في منصتنا. يتم تنظيم استخدامك لخدماتنا بموجب شروط
                 الاستخدام التالية. بمجرد شرائك لأي منتج أو خدمة من قالبك، فإنك
@@ -75,9 +85,9 @@ export default function Terms() {
                 حقوق الملكية الفكرية والترخيص
               </h2>
               <p className="text-gray-700 leading-relaxed">
-                جميع المنتجات، الأكواد البرمجية،
-                التصاميم، والشعارات المعروضة على منصة "قالبك" هي ملكية فكرية
-                حصرية للمنصة ومحمية بموجب قوانين حقوق النشر الدولية.
+                جميع المنتجات، الأكواد البرمجية، التصاميم، والشعارات المعروضة
+                على منصة "قالبك" هي ملكية فكرية حصرية للمنصة ومحمية بموجب قوانين
+                حقوق النشر الدولية.
               </p>
               <p className="text-gray-700 leading-relaxed mt-2">
                 عند شرائك لأي منتج من "قالبك"، فإنك لا تشتري ملكية الكود نفسه،
@@ -124,14 +134,13 @@ export default function Terms() {
               </p>
             </section>
 
-
             {/* Delivery Terms */}
             <section>
               <h2 className="text-2xl font-bold mb-4">التسليم والوصول</h2>
               <p className="text-gray-700 leading-relaxed">
-                يتم تسليم المنتجات إلكترونياً فور إتمام الدفع بنجاح عبر رابط مباشر 
-                
-                </p>
+                يتم تسليم المنتجات إلكترونياً فور إتمام الدفع بنجاح عبر رابط
+                مباشر
+              </p>
               <ul className="list-disc list-inside mt-2 text-gray-700">
                 <li>
                   نحتفظ بالحق في إيقاف رابط التحميل في حال رصدنا نشاطاً مشبوهاً
@@ -153,8 +162,6 @@ export default function Terms() {
               </p>
             </section>
 
-            
-
             {/* Legal Compliance */}
             <section>
               <h2 className="text-2xl font-bold mb-4">الامتثال للقوانين</h2>
@@ -165,16 +172,14 @@ export default function Terms() {
               </p>
             </section>
 
-            
-
             <section>
               <h2 className="text-2xl font-bold mb-4">
                 معالجة المدفوعات والضرائب
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 يتم معالجة جميع عمليات الشراء على منصة 'قالبك' بواسطة{" "}
-                <span className="font-semibold">Lemon Squeezy</span>. يعتبر
-                Lemon Squeezy هو تاجر السجل (Merchant of Record) لجميع طلباتنا،
+                <span className="font-semibold">Paddle</span>. يعتبر
+                Paddle هو تاجر السجل (Merchant of Record) لجميع طلباتنا،
                 وهو المسؤول عن معالجة المدفوعات، الضرائب، وخدمة العملاء المتعلقة
                 بالفواتير.
               </p>
@@ -227,9 +232,10 @@ export default function Terms() {
             <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
               <h2 className="text-xl font-bold mb-3">للتواصل معنا</h2>
               <p className="text-gray-700">
-                لأي استفسارات حول شروط الاستخدام، يرجى التواصل معنا عبر صفحة الدعم الفني:{" "}
-                <Link 
-                  href="/support" 
+                لأي استفسارات حول شروط الاستخدام، يرجى التواصل معنا عبر صفحة
+                الدعم الفني:{" "}
+                <Link
+                  href="/support"
                   className="font-semibold text-blue-600 hover:underline"
                 >
                   qalebk.com/support
@@ -237,12 +243,14 @@ export default function Terms() {
               </p>
             </section>
 
-            {/* Contact */}
+            {/* Owner Section */}
             <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-              <h2 className="text-xl font-bold mb-3">المالك</h2>
+              <h2 className="text-xl font-bold mb-3">الملكية القانونية</h2>
               <p className="text-gray-700">
-                يتم تشغيل منصة قالبك بواسطة Mohanad Ibrahim Mukhtar كمالك مؤسسة
-                فردية
+                هذا الموقع والخدمات المرتبطة به تدار وتعود ملكيتها بالكامل
+                للمالك:
+                <span className="font-semibold"> Mohannad Ibrahim Mukhtar </span>
+                بصفته المطور والمصمم الوحيد لكافة المحتويات الرقمية المباعة.
               </p>
             </section>
           </div>

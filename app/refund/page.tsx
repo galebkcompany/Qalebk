@@ -34,13 +34,13 @@ export default function Refund() {
               <div className="border-r-4 border-black pr-4">
                 <h3 className="font-semibold text-gray-900 mb-2">خلل فني مثبت</h3>
                 <p className="text-gray-700 mb-3">
-                  في حالة اكتشاف خلل فني في الكود يمنع تشغيله بشكل صحيح أو يسبب أخطاء برمجية واضحة ، يحق للعميل طلب استرجاع المبلغ المدفوع خلال 3 يوماً من تاريخ الشراء. يجب على العميل تقديم دليل واضح على الخلل (لقطات شاشة، رسائل الأخطاء، وصف مفصل للمشكلة).
+                  في حالة اكتشاف خلل فني في الكود يمنع تشغيله بشكل صحيح أو يسبب أخطاء برمجية واضحة ، يحق للعميل طلب استرجاع المبلغ المدفوع خلال 14 يوماً من تاريخ الشراء. يجب على العميل تقديم دليل واضح على الخلل (لقطات شاشة، رسائل الأخطاء، وصف مفصل للمشكلة).
                 </p>
               </div>
               <div className="border-r-4 border-black pr-4">
                 <h3 className="font-semibold text-gray-900 mb-2">عدم توافق المنصة</h3>
                 <p className="text-gray-700">
-                  إذا كان الكود غير متوافق مع منصة المتجر الإلكتروني المُعلن عنها، يحق للعميل طلب استرجاع المبلغ خلال 3 يوماً من الشراء.
+                  إذا كان الكود غير متوافق مع منصة المتجر الإلكتروني المُعلن عنها، يحق للعميل طلب استرجاع المبلغ خلال 14 يوماً من الشراء.
                 </p>
                 <p className="text-gray-700 mt-4">
                     مسؤولية التحقق من توافق الكود مع المنصة تقع على العميل قبل الشراء بناءً على الأقسام المدعومة المذكورة في صفحة المنتج.
@@ -76,7 +76,7 @@ export default function Refund() {
               </li>
               <li className="flex items-start">
                 <span className="ml-3 font-bold">•</span>
-                <span>إذا مضى أكثر من 3 يوماً على تاريخ الشراء.</span>
+                <span>إذا مضى أكثر من 14 يوماً على تاريخ الشراء.</span>
               </li>
               <li className="flex items-start">
                 <span className="ml-3 font-bold">•</span>
@@ -107,7 +107,7 @@ export default function Refund() {
               </li>
               <li className="flex items-start">
                 <span className="ml-3 font-bold">•</span>
-                <span>الفترة الزمنية للاسترجاع هي 3 يوماً فقط من تاريخ الشراء.</span>
+                <span>الفترة الزمنية للاسترجاع هي 14 يوماً فقط من تاريخ الشراء.</span>
               </li>
               <li className="flex items-start">
                 <span className="ml-3 font-bold">•</span>
