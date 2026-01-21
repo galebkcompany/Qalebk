@@ -3,7 +3,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "شروط الاستخدام - قالبك",
+  title: "شروط الاستخدام",
+  description: "شروط الاستخدام الخاصة بمنصة قالبك",
 };
 
 export default function Terms() {

@@ -3,7 +3,8 @@ import Link from "next/link";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'سياسة الخصوصية - قالبك',
+  title: 'سياسة الخصوصية ',
+  description: 'سياسة الخصوصية الخاصة بمنصة قالبك'
 };
 
 export default function Privacy() {

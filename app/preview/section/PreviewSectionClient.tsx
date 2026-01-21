@@ -41,17 +41,7 @@ export default function PreviewSection() {
     fetchCode();
   }, [productId]);
 
-useEffect(() => {
-  if (!loading && injectionCode) {
-    // تنفيذ الكود مباشرة بدلاً من حقن script tag
-    try {
-      const executeCode = new Function(injectionCode);
-      executeCode();
-    } catch (error) {
-      console.error("Error executing injection code:", error);
-    }
-  }
-}, [loading, injectionCode]);
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -86,7 +76,10 @@ useEffect(() => {
       </header>
 
       {/* Hero Section - سيتم الحقن هنا */}
-      <div id="hero-injection-point" />
+      <div
+        id="hero-injection-point"
+        dangerouslySetInnerHTML={{ __html: injectionCode }}
+      />
 
       {/* Products Grid */}
       <section className="max-w-7xl mx-auto px-4 py-12">
@@ -95,7 +88,7 @@ useEffect(() => {
           <div className="w-64 h-4 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer bg-[length:200%_100%]" />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
             <div
               key={i}

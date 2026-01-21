@@ -1,10 +1,14 @@
 // app/support/page.tsx
-"use client";
 
 import Link from "next/link";
 import { Phone, BookOpen } from "lucide-react";
 import Footer from "../components/Footer";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "دعم العملاء",
+  description: "صفحة دعم العملاء لمنصة قالبك",
+};
 export default function SupportPage() {
   const whatsappNumber = "966579109350"; // ضع رقمك هنا
   const whatsappMessage = encodeURIComponent(
