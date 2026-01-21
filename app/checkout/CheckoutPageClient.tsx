@@ -421,7 +421,7 @@ export default function CheckoutPage() {
                     <p className="text-xs text-gray-400">
                       المدفوعات مؤمنة بواسطة{" "}
                       <span className="font-semibold text-gray-500">
-                        Paddle
+                        Lemon Squeezy
                       </span>
                     </p>
                   </div>

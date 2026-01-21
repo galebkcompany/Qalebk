@@ -178,8 +178,8 @@ export default function Terms() {
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 يتم معالجة جميع عمليات الشراء على منصة 'قالبك' بواسطة{" "}
-                <span className="font-semibold">Paddle</span>. يعتبر
-                Paddle هو تاجر السجل (Merchant of Record) لجميع طلباتنا،
+                <span className="font-semibold">Lemon Squeezy</span>. يعتبر
+                Lemon Squeezy هو تاجر السجل (Merchant of Record) لجميع طلباتنا،
                 وهو المسؤول عن معالجة المدفوعات، الضرائب، وخدمة العملاء المتعلقة
                 بالفواتير.
               </p>
