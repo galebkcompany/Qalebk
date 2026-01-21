@@ -152,7 +152,7 @@ export default function AddProduct() {
             image_public_id,
             preview_url:
               productType === "section" ? "/preview/section" : "/preview/page",
-            price_id: priceId,
+            variant_id: priceId,
             is_featured: isFeatured,
             platforms,
             installation_guide: installation,
