@@ -1,6 +1,10 @@
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
+import type { Metadata } from 'next';
 
+export const metadata: Metadata = {
+  title: 'سياسة الخصوصية - قالبك',
+};
 
 export default function Privacy() {
   return (

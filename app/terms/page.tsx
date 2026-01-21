@@ -1,5 +1,10 @@
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'شروط الاستخدام - قالبك',
+};
 
 export default function Terms() {
   return (
