@@ -6,7 +6,7 @@ import { supabaseServer } from "@/app/lib/supabaseServer";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'الأقسام الجاهزة | قالبك',
+  title: 'الأقسام الجاهزة ',
   description:
     'أقسام برمجية جاهزة (HTML / CSS) لرفع احترافية متجرك على سلة وزد وشوبيفاي، سهلة التركيب وتزيد من التحويل.',
 };
