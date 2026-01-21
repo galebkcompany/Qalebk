@@ -24,17 +24,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${baseUrl}/terms`, // هامة لـ Paddle
+      url: `${baseUrl}/categories/sections`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/terms`,
       lastModified: new Date(),
       priority: 0.5,
     },
     {
-      url: `${baseUrl}/privacy`, // هامة لـ Paddle
+      url: `${baseUrl}/privacy`, 
       lastModified: new Date(),
       priority: 0.5,
     },
     {
-      url: `${baseUrl}/refund`, // هامة لـ Paddle
+      url: `${baseUrl}/refund`, 
       lastModified: new Date(),
       priority: 0.5,
     },

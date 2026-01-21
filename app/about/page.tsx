@@ -1,4 +1,11 @@
 import Footer from "../components/Footer";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: ' حول منصة قالبك - من نحن',
+  description:
+    'اكتشف قصة منصة قالبك، رؤيتنا في تقديم حلول برمجية مبتكرة لأصحاب المتاجر الإلكترونية في الوطن العربي، ولماذا نحن الخيار الأمثل لتحويل متجرك إلى تجربة رقمية متكاملة.',
+};
 
 export default function AboutPage() {
   return (

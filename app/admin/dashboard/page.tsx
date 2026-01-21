@@ -1,26 +1,50 @@
 // app/admin/dashboard/page.tsx
-import { supabase } from '@/app/lib/supabaseClient'
+
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import Card from '../components/Card'
+
+export const dynamic = 'force-dynamic'
+
 
 async function getStats() {
   try {
+    const cookieStore = await cookies()
+    
+    // إنشاء Supabase Admin Client مع Service Role Key
+    const supabaseAdmin = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!, // استخدام Service Role مباشرة
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value
+          },
+        },
+      }
+    )
+
     // 1. عدد المنتجات
-    const { count: productsCount, error: productsError } = await supabase
+    const { count: productsCount, error: productsError } = await supabaseAdmin
       .from('products')
       .select('*', { count: 'exact', head: true })
 
-    if (productsError) throw productsError
+    if (productsError) {
+      console.error('Error fetching products:', productsError)
+    }
 
-    // 2. عدد المستخدمين المسجلين - نستخدم API route
+    // 2. عدد المستخدمين المسجلين
     let usersCount = 0
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/admin/users-count`)
-      if (response.ok) {
-        const data = await response.json()
-        usersCount = data.count || 0
+      const { data: { users }, error: usersError } = await supabaseAdmin.auth.admin.listUsers()
+      
+      if (usersError) {
+        console.error('Error fetching users:', usersError)
+      } else {
+        usersCount = users?.length || 0
       }
     } catch (error) {
-      console.error('Error fetching users count:', error)
+      console.error('Error listing users:', error)
     }
 
     return {
@@ -51,7 +75,9 @@ export default async function Dashboard() {
   ]
 
   return (
-    <div className="space-y-6 ">
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold">لوحة التحكم</h1>
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, i) => (
           <div key={i} className="relative">
@@ -64,7 +90,6 @@ export default async function Dashboard() {
           </div>
         ))}
       </div>
-
     </div>
   )
 }
