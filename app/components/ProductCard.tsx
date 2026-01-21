@@ -22,7 +22,7 @@ export default function ProductCard({ product }: { product: Product }) {
       target="_blank"
       rel="noopener noreferrer"
     >
-      <div className="bg-white rounded-xl border border-gray-200  overflow-hidden hover:shadow-md transition">
+      <div className="bg-white rounded-lg border border-gray-200  overflow-hidden hover:shadow-md transition">
         {/* Image */}
         <div className="relative w-full overflow-hidden bg-gray-100">
           {product.is_featured && (

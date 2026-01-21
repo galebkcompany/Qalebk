@@ -160,13 +160,13 @@ export default function ProductPageClient({
 
   return (
     <main className="min-h-screen bg-white" dir="rtl">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-2 py-8">
         {/* الحاوية الرئيسية - تخطيط ثنائي الأعمدة */}
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-12">
           {/* الجانب الايمن - الصورة والمحتوى */}
           <div className=" space-y-8">
             {/* صورة المنتج */}
-            <div className="relative bg-gray-100 rounded-2xl border border-gray-100 overflow-hidden  w-full">
+            <div className="relative bg-gray-100 border border-gray-100 overflow-hidden  w-full">
               {product.is_featured && (
                 <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 sm:px-3 sm:text-[11px] rounded-full shadow-lg">
                   <span>مميز</span>
