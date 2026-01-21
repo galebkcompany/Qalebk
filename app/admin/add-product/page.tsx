@@ -6,7 +6,7 @@ import axios from "axios";
 import slugify from "slugify";
 
 type Price = {
-  price_id: string;
+  variant_id: string;
   price_label: string;
   amount: number;
 };
@@ -99,7 +99,7 @@ export default function AddProduct() {
     const loadPrices = async () => {
       const { data, error } = await supabase
         .from("prices")
-        .select("price_id, price_label, amount");
+        .select("variant_id, price_label, amount");
 
       if (!error && data) {
         setPrices(data);
@@ -307,8 +307,8 @@ export default function AddProduct() {
             >
               <option value="">اختر السعر</option>
               {prices.map((price) => (
-                <option key={price.price_id} value={price.price_id}>
-                  {price.price_label} – ${price.amount}
+                <option key={price.variant_id} value={price.variant_id}>
+                  {price.price_label} – SAR {price.amount}
                 </option>
               ))}
             </select>
