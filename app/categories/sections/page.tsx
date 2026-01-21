@@ -3,6 +3,14 @@ import Footer from "@/app/components/Footer";
 import Hero from "@/app/components/Hero";
 import ProductCard from "@/app/components/ProductCard";
 import { supabaseServer } from "@/app/lib/supabaseServer";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'الأقسام الجاهزة | قالبك',
+  description:
+    'أقسام برمجية جاهزة (HTML / CSS) لرفع احترافية متجرك على سلة وزد وشوبيفاي، سهلة التركيب وتزيد من التحويل.',
+};
+
 
 export const dynamic = 'force-dynamic'; // فرض التحديث الديناميكي
 export const revalidate = 0;

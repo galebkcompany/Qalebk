@@ -11,7 +11,7 @@ import LayoutClient from "./components/LayoutClient";
 export const metadata: Metadata = {
   metadataBase: new URL('https://qalebk.com'),
   title: {
-    default: 'قالبك | أقسام برمجية احترافية لمتجرك و موقعك الإلكتروني',
+    default: 'قالبك | أقسام احترافية جاهزة لمتجرك الإلكتروني',
     template: '%s | قالبك'
   },
   description: 'أقسام جاهزة ترفع شكل متجرك وتزيد التحويلبدون برمجة حوّل متجرك إلى تجربة احترافية خلال دقائق، أقسام جاهزة تعمل على سلة، زد، شوبيفاي والمواقع المخصصة بدون تعقيد.',
