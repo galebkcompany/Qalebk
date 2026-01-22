@@ -503,7 +503,7 @@ export default function ProductPageClient({
               {/* <DetailItem label="يباع بواسطة" value="قالبك" /> */}
 
               {/* نوع المنتج */}
-              <DetailItem label="نوع المنتج" value="منتج رقمي (Section)" />
+              <DetailItem label="نوع المنتج" value="منتج رقمي" />
 
               {/* طريقة الاستلام - ضرورية جداً لـ Paddle */}
               <DetailItem label="طريقة الاستلام" value="تحميل فوري" />
