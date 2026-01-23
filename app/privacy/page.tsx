@@ -192,19 +192,19 @@ export default function Privacy() {
           </section>
 
           {/* Contact */}
-          <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <h2 className="text-xl font-bold mb-3">للتواصل بشأن الخصوصية</h2>
-            <p className="text-gray-700">
-              لأي استفسارات حول سياسة الخصوصية أو لممارسة حقوقك، يرجى التواصل معنا عبر: {" "}
-                <Link 
-                  href="/support" 
-                  className="font-semibold text-blue-600 hover:underline"
-                >
-                  qalebk.com/support
-                </Link>
-              
-            </p>
-          </section>
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+              <h2 className="text-xl font-bold mb-3">التواصل</h2>
+              <p className="text-gray-700 leading-relaxed">
+                إذا كانت لديك أي أسئلة أو مخاوف بشأن سياسة الخصوصية هذه، يرجى التواصل معنا عبر البريد الإلكتروني التالي:
+              </p>
+
+              <a
+                href="mailto:support@qalebk.com"
+                className="mt-2 inline-block font-semibold text-blue-600 hover:underline"
+              >
+                support@qalebk.com
+              </a>
+            </section>
   
         </div>
       </main>

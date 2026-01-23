@@ -416,7 +416,7 @@ export default function CheckoutPage() {
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-center gap-1.5 mb-3">
+                  {/* <div className="flex items-center justify-center gap-1.5 mb-3">
                     <Lock size={14} className="text-green-600" />
                     <p className="text-xs text-gray-400">
                       المدفوعات مؤمنة بواسطة{" "}
@@ -424,7 +424,7 @@ export default function CheckoutPage() {
                         Lemon Squeezy
                       </span>
                     </p>
-                  </div>
+                  </div> */}
                   <div>
                     {/* أيقونات وسائل الدفع */}
                     <div className="mt-4">
