@@ -81,12 +81,12 @@ export default function Refund() {
                 يجب على العميل تقديم طلب الاسترجاع عبر التواصل مع فريق الدعم{" "}
                 <span className="font-semibold">
                   {" "}
-                  <Link
-                    href="/support"
-                    className="font-semibold text-blue-600 hover:underline"
-                  >
-                    qalebk.com/support
-                  </Link>
+                  <a
+                href="mailto:support@qalebk.com"
+                className="mt-2 inline-block font-semibold text-blue-600 hover:underline"
+              >
+                support@qalebk.com
+              </a>
                 </span>{" "}
                 مع تقديم الأدلة الكافية على الخلل. ستقوم فريق قالبك بفحص الطلب
                 والرد خلال 5 أيام عمل.
