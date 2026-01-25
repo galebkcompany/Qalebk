@@ -12,21 +12,26 @@ const HeroSection = () => {
       <div className="max-w-7xl mx-auto text-center relative z-10">
         {/* العنوان الرئيسي */}
         <h1 className="  leading-tight mb-3 sm:mb-8 tracking-tight">
-          <span className="text-slate-800 text-3xl sm:text-5xl md:text-6xl lg:text-6xl">أقسام جاهزة ترفع شكل متجرك وتزيد التحويل</span>
+          <span className="text-slate-800 text-3xl sm:text-5xl md:text-6xl lg:text-6xl">
+            متجرك يبدو عاديًا؟
+          </span>
           <br />
           {/* تأثير التوهج الأزرق على خلفية بيضاء */}
           <span className="relative inline-block mt-2 md:mt-6">
-            <span className="text-2xl sm:text-4xl md:text-5xl lg:text-5xl text-blue-600 ">
-              بدون برمجة
+            <span className="text-2xl sm:text-4xl md:text-5xl lg:text-[42px] text-blue-600 ">
+              حوّله إلى واجهة احترافية بأقسام جاهزة تزيد التحويل — بدون برمجة
             </span>
           </span>
         </h1>
 
         {/* الوصف */}
-        <p className="text-slate-500 text-base md:text-xl max-w-3xl mx-auto mb-4 leading-relaxed font-medium">
-          حوّل متجرك إلى تجربة احترافية خلال دقائق، أقسام جاهزة تعمل على
-          <span className="text-blue-600 font-bold mx-1"> سلة، زد، شوبيفاي </span>
-          والمواقع المخصصة بدون تعقيد.
+        <p className="text-slate-700 text-base md:text-xl max-w-3xl mx-auto mb-4 leading-relaxed font-medium">
+           تعمل على
+          <span className="text-blue-600 mx-1">
+            {" "}
+            سلة، زد، شوبيفاي{" "}
+          </span>
+         والمواقع المخصصة انسخ والصق فقط — بدون تعقيد.
         </p>
 
         {/* زر الإجراء CTA */}
@@ -35,8 +40,6 @@ const HeroSection = () => {
             استعرض الأقسام
           </button>
         </div> */}
-
-        
       </div>
     </section>
   );
