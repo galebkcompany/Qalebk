@@ -19,8 +19,6 @@ export default function ProductCard({ product }: { product: Product }) {
     <Link
       href={`/product/${product.slug}`}
       className="block"
-      target="_blank"
-      rel="noopener noreferrer"
     >
       <div className="bg-white rounded-lg border border-gray-200  overflow-hidden hover:shadow-md transition">
         {/* Image */}

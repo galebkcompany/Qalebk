@@ -62,6 +62,21 @@ export default function ProductPageClient({
     }));
   };
 
+  const handleWhatsApp = () => {
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", "whatsapp_lead", {
+        event_category: "engagement",
+        event_label: "buy_section",
+        value: 1,
+      });
+    }
+    const message = encodeURIComponent(
+      "مرحبًا، أريد قسم. متجري يعمل على منصة ____ . هل يشمل الشراء شرح التركيب؟",
+    );
+
+    window.open(`https://wa.me/996579109350?text=${message}`, "_blank");
+  };
+
   useEffect(() => {
     if (!product?.id) return;
 
@@ -404,7 +419,7 @@ export default function ProductPageClient({
                 </span>
               </div>
               <p className="text-green-500 font-medium text-base">
-                خصم {discount}% لفتره محدوده!
+                قسم إضافي مجاني لأول 10 عملاء!
               </p>
             </div>
 
@@ -422,7 +437,7 @@ export default function ProductPageClient({
                 rel="noopener noreferrer"
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-full flex items-center justify-center gap-2 transition-colors duration-200 active:scale-95"
               >
-                مشاهدة المعاينة
+                معاينة القسم
                 <Eye size={20} />
               </Link>
             ) : (
@@ -431,10 +446,12 @@ export default function ProductPageClient({
                 <Eye size={20} />
               </div>
             )}
+
+            {/* زر الشراء والإضافة إلى المفضلة */}
             <div className="flex items-center gap-2">
               {/* زر اشترِ الآن */}
               <button
-                onClick={handleBuyNow}
+                onClick={handleWhatsApp}
                 className="
             flex-[9]
       bg-black hover:bg-gray-900
@@ -444,7 +461,7 @@ export default function ProductPageClient({
       active:scale-95
     "
               >
-                شراء الآن
+                احصل على القسم
               </button>
 
               {/* زر إضافة إلى السلة */}
@@ -556,7 +573,7 @@ export default function ProductPageClient({
                 href="/support"
                 className="w-full bg-gray-50 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-5 rounded-full transition-colors duration-200 text-sm"
               >
-               هل تحتاج الى المساعده؟ تواصل معنا
+                هل تحتاج الى المساعده؟ تواصل معنا
               </Link>
             </div>
           </div>

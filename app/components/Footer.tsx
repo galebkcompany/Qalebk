@@ -55,6 +55,22 @@ export default function Footer() {
                   className="brightness-100 invert"
                 />
               </Link>
+
+              
+              <Link
+                href="https://x.com/Qalebk1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-gray-500 h-12 w-12 flex items-center justify-center rounded-full hover:bg-gray-200 transition"
+              >
+                <Image
+                  src="/icons/x.svg"
+                  alt="X"
+                  width={26}
+                  height={26}
+                  className=""
+                />
+              </Link>
             </div>
           </div>
 
