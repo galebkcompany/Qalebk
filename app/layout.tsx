@@ -1,86 +1,88 @@
-
 import "./globals.css";
 import { Cairo } from "next/font/google";
-import Script from 'next/script'
-import type { Metadata } from 'next'
-import { WebsiteJsonLd, OrganizationJsonLd } from './components/JsonLd'
+import Script from "next/script";
+import type { Metadata } from "next";
+import { WebsiteJsonLd, OrganizationJsonLd } from "./components/JsonLd";
 import LayoutClient from "./components/LayoutClient";
 
-
-
 export const metadata: Metadata = {
-  metadataBase: new URL('https://qalebk.com'),
+  metadataBase: new URL("https://qalebk.com"),
   title: {
-    default: 'قالبك | أقسام جاهزة لرفع تحويل متجرك الإلكتروني',
-    template: '%s | قالبك'
+    default: "قالبك | أقسام جاهزة لرفع تحويل متجرك الإلكتروني",
+    template: "%s | قالبك",
   },
-description: 'أقسام جاهزة لمتاجر سلة، زد، وشوبيفاي تساعدك على تحسين واجهة المتجر وزيادة التحويل بدون برمجة. انسخ والصق وابدأ خلال دقائق.',
-keywords: [
-  // نية تخصيص وتحسين
-  'أقسام جاهزة سلة',
-  'أقسام جاهزة زد',
-  'UI Sections متاجر',
-  'تخصيص واجهة متجر إلكتروني',
+  icons: {
+    icon: "/favicon.ico", // هذا يكفي لمعظم المتصفحات
+    shortcut: "/favicon.ico", // اختياري لتوافق إضافي
+  },
+  description:
+    "أقسام جاهزة لمتاجر سلة، زد، وشوبيفاي تساعدك على تحسين واجهة المتجر وزيادة التحويل بدون برمجة. انسخ والصق وابدأ خلال دقائق.",
+  keywords: [
+    // نية تخصيص وتحسين
+    "أقسام جاهزة سلة",
+    "أقسام جاهزة زد",
+    "UI Sections متاجر",
+    "تخصيص واجهة متجر إلكتروني",
 
-  // نية تجارية
-  'منتجات رقمية للمتاجر',
-  'أقسام لزيادة التحويل',
-  'تحسين واجهة متجر',
+    // نية تجارية
+    "منتجات رقمية للمتاجر",
+    "أقسام لزيادة التحويل",
+    "تحسين واجهة متجر",
 
-  // نية تقنية
-  'تعديل متجر سلة',
-  'تخصيص ثيم سلة',
-  'قوالب جاهزة للمتاجر'
-],
-  authors: [{ name: 'منصة قالبك' }],
-  creator: 'قالبك',
-  publisher: 'قالبك',
-  
+    // نية تقنية
+    "تعديل متجر سلة",
+    "تخصيص ثيم سلة",
+    "قوالب جاهزة للمتاجر",
+  ],
+  authors: [{ name: "منصة قالبك" }],
+  creator: "قالبك",
+  publisher: "قالبك",
+
   openGraph: {
-    type: 'website',
-    locale: 'ar_SA',
-    url: 'https://qalebk.com',
-    title: 'قالبك - سوق الأقسام البرمجية لمتاجر سلة وزد',
-    description: 'أقسام برمجية جاهزة (HTML/CSS/JS) لرفع احترافية متجرك على سلة وزد خلال دقائق.',
-    siteName: 'منصة قالبك',
+    type: "website",
+    locale: "ar_SA",
+    url: "https://qalebk.com",
+    title: "قالبك - سوق الأقسام البرمجية لمتاجر سلة وزد",
+    description:
+      "أقسام برمجية جاهزة (HTML/CSS/JS) لرفع احترافية متجرك على سلة وزد خلال دقائق.",
+    siteName: "منصة قالبك",
     images: [
       {
-        url: '/og-image.png', // تأكد من وجود صورة توضح واجهة متجرك
+        url: "/og-image.png", // تأكد من وجود صورة توضح واجهة متجرك
         width: 1200,
         height: 630,
-        alt: 'قالبك - احترافية متجرك تبدأ من هنا'
-      }
+        alt: "قالبك - احترافية متجرك تبدأ من هنا",
+      },
     ],
   },
-  
+
   twitter: {
-    card: 'summary_large_image',
-    title: 'قالبك | أفضل الحلول البرمجية لمتاجرك الإلكترونية',
-    description: 'انسخ الكود، الصقه، وانطلق! أقسام احترافية لمنصة سلة وزد بأسعار منافسة.',
-    images: ['/twitter-image.png'],
+    card: "summary_large_image",
+    title: "قالبك | أفضل الحلول البرمجية لمتاجرك الإلكترونية",
+    description:
+      "انسخ الكود، الصقه، وانطلق! أقسام احترافية لمنصة سلة وزد بأسعار منافسة.",
+    images: ["/twitter-image.png"],
   },
-  
-  
+
   robots: {
     index: true,
     follow: true,
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 
   alternates: {
-    canonical: 'https://qalebk.com',
+    canonical: "https://qalebk.com",
     languages: {
-      'ar-SA': 'https://qalebk.com',
+      "ar-SA": "https://qalebk.com",
     },
   },
-}
-
+};
 
 const cairo = Cairo({
   subsets: ["arabic"],
@@ -91,7 +93,7 @@ const cairo = Cairo({
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="ar" dir="rtl" className={cairo.variable}>
@@ -109,14 +111,16 @@ export default function RootLayout({
             gtag('config', 'G-HCJLZTK27J');
           `}
         </Script>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
       </head>
       <body className="font-cairo text-black">
         <WebsiteJsonLd />
         <OrganizationJsonLd />
-        
+
         {/* 👇 استخدام Client Component */}
         <LayoutClient>{children}</LayoutClient>
       </body>
     </html>
-  )
+  );
 }
