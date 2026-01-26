@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 
 export const dynamic = 'force-dynamic'; // فرض التحديث الديناميكي
-export const revalidate = 0;
+export const revalidate = 7200; // إعادة التحقق كل ساعتين
 
 export default async function SectionsPage() {
 

@@ -130,6 +130,9 @@ export default function AddProduct() {
         "upload_preset",
         process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
       );
+
+      formData.append("resource_type", "auto");
+
       const cloudRes = await axios.post(
         process.env.NEXT_PUBLIC_CLOUDINARY_URL!,
         formData,
@@ -235,7 +238,7 @@ export default function AddProduct() {
             <input
               className="w-full bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-4 hover:border-gray-400 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-black file:text-white hover:file:bg-gray-800"
               type="file"
-              accept="image/*"
+              accept="image/*,video/mp4"
               onChange={(e) => setImage(e.target.files?.[0] || null)}
             />
             {image && (

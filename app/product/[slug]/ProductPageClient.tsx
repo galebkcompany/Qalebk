@@ -188,13 +188,25 @@ export default function ProductPageClient({
                   <span>★</span>
                 </div>
               )}
-              <img
-                src={product.image_url}
-                alt={product.name}
-                className="w-full h-full object-cover"
-                loading="lazy"
-                draggable={false}
-              />
+              {product.image_url.endsWith(".mp4") ? (
+                <video
+                  src={product.image_url}
+                  muted
+                  loop
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <img
+                  src={product.image_url}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  draggable={false}
+                />
+              )}
             </div>
             {/* تفاصيل المنتج */}
             <ProductSection title="وصف القسم" content={product.description} />

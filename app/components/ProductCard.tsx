@@ -16,10 +16,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const originalPrice = product.price * 2; // السعر قبل الخصم
 
   return (
-    <Link
-      href={`/product/${product.slug}`}
-      className="block"
-    >
+    <Link href={`/product/${product.slug}`} className="block">
       <div className="bg-white rounded-lg border border-gray-200  overflow-hidden hover:shadow-md transition">
         {/* Image */}
         <div className="relative w-full overflow-hidden bg-gray-100">
@@ -30,20 +27,30 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           )}
 
-          <img
-            src={product.image_url}
-            alt={product.name}
-            draggable={false}
-            className="w-full h-full object-cover cursor-grab active:cursor-grabbing select-none"
-          />
+          {product.image_url.endsWith(".mp4") ? (
+            <video
+              src={product.image_url}
+              muted
+              loop
+              autoPlay
+              playsInline
+              preload="metadata"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <img
+              src={product.image_url}
+              alt={product.name}
+              draggable={false}
+              className="w-full h-full object-cover cursor-grab active:cursor-grabbing select-none"
+            />
+          )}  
         </div>
 
         {/* Content */}
         <div className="p-3 sm:p-4 space-y-3">
           {/* Description */}
-          <p className="text-sm text-gray-700 line-clamp-2">
-            {product.name}
-          </p>
+          <p className="text-sm text-gray-700 line-clamp-2">{product.name}</p>
 
           {/* Price + Icons */}
           <div className="flex items-center justify-between text-black">
