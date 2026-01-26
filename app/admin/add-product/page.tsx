@@ -124,6 +124,7 @@ export default function AddProduct() {
 
     try {
       // 1. رفع الصورة إلى Cloudinary
+      // ✅ الكود المحسّن
       const formData = new FormData();
       formData.append("file", image);
       formData.append(
@@ -131,12 +132,14 @@ export default function AddProduct() {
         process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
       );
 
-      formData.append("resource_type", "auto");
+      // تحديد نوع الملف تلقائياً
+      const isVideo = image.type.startsWith("video/");
+      const resourceType = isVideo ? "video" : "image";
 
-      const cloudRes = await axios.post(
-        process.env.NEXT_PUBLIC_CLOUDINARY_URL!,
-        formData,
-      );
+      // رفع الملف مع تحديد النوع في الرابط
+      const uploadUrl = `${process.env.NEXT_PUBLIC_CLOUDINARY_URL!.replace("/image/upload", `/${resourceType}/upload`)}`;
+
+      const cloudRes = await axios.post(uploadUrl, formData);
       const image_url = cloudRes.data.secure_url;
       const image_public_id = cloudRes.data.public_id;
 

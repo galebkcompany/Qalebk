@@ -35,7 +35,8 @@ export default function ProductCard({ product }: { product: Product }) {
               autoPlay
               playsInline
               preload="metadata"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover block"
+              style={{ backgroundColor: "transparent" }}
             />
           ) : (
             <img
@@ -44,7 +45,7 @@ export default function ProductCard({ product }: { product: Product }) {
               draggable={false}
               className="w-full h-full object-cover cursor-grab active:cursor-grabbing select-none"
             />
-          )}  
+          )}
         </div>
 
         {/* Content */}
