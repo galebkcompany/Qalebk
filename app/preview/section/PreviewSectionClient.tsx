@@ -185,7 +185,7 @@ body::-webkit-scrollbar {
         <div
           className={`bg-white transition-all duration-500 ease-in-out shadow-2xl overflow-hidden relative ${
             viewMode === "mobile"
-              ? "w-[375px] h-[680px] rounded-[45px] border-[6px] border-[#1a1a1a] ring-8 ring-white/50"
+              ? "w-[385px] h-[680px] rounded-[45px] border-[6px] border-[#1a1a1a] ring-8 ring-white/50"
               : "w-full h-screen"
           }`}
         >
@@ -210,7 +210,7 @@ body::-webkit-scrollbar {
       </div>
 
       {/* Floating Toggle Button - Fixed at bottom center */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100]">
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] hidden md:block">
         <div className="bg-white/70 backdrop-blur-xl p-1.5 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-white/20 flex items-center gap-1">
           <button
             onClick={() => setViewMode("desktop")}

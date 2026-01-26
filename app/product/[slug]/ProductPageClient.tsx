@@ -245,177 +245,7 @@ export default function ProductPageClient({
               />
             )}
 
-            {reviews.length === 0 && (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xl font-medium text-gray-900">
-                    تقييمات المنتج (0)
-                  </h2>
-                  <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
-                    <span className="text-2xl font-base text-black">
-                      {averageRating.toFixed(1)}
-                    </span>
-                    <img src="/icons/star.svg" alt="star" className="w-6 h-6" />
-                  </div>
-                </div>
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-                  <p className="text-gray-700 font-medium">
-                    لا توجد تقييمات بعد
-                  </p>
-                  <p className="text-sm text-gray-500 mt-4  ">
-                    كن أول من يشارك تجربته مع هذا المنتج
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* التقييمات */}
-            {reviews && reviews.length > 0 && (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xl font-medium text-gray-900">
-                    تقييمات القسم ({reviews.length})
-                  </h2>
-                  <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
-                    <span className="text-2xl font-base text-black">
-                      {averageRating.toFixed(1)}
-                    </span>
-                    <img src="/icons/star.svg" alt="star" className="w-6 h-6" />
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
-                  {reviews.slice(0, 3).map((review) => (
-                    <div
-                      key={review.id}
-                      className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <div className="flex">
-                            {[...Array(5)].map((_, i) => (
-                              <img
-                                key={i}
-                                src={
-                                  i < review.rating
-                                    ? "/icons/star.svg"
-                                    : "/icons/staroff.svg"
-                                }
-                                alt="star"
-                                className="w-6 h-6"
-                              ></img>
-                            ))}
-                          </div>
-                          <span className="text-sm font-medium text-gray-700">
-                            {review.rating}/5
-                          </span>
-                        </div>
-                        <span className="text-sm text-gray-500">
-                          {new Date(review.created_at).toLocaleDateString(
-                            "ar-SA",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            },
-                          )}
-                        </span>
-                      </div>
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {review.review_text || "—"}
-                      </p>
-                    </div>
-                  ))}
-
-                  {/* زر عرض المزيد */}
-                  {reviews.length > 3 && (
-                    <button
-                      onClick={() => setShowAllReviews(true)}
-                      className="w-full mt-4 py-2 text-center text-gray-600 hover:text-gray-900 font-medium transition-colors"
-                    >
-                      عرض المزيد من التقييمات ←
-                    </button>
-                  )}
-                </div>
-
-                {/* النافذة المنبثقة */}
-                {showAllReviews && (
-                  <div className="fixed inset-0 bg-black/30 bg-opacity-50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
-                      {/* رأس النافذة */}
-                      <div className="flex items-center justify-between p-6 border-b border-gray-300">
-                        <div className="flex items-center gap-3">
-                          <h3 className="text-2xl font-bold text-gray-900">
-                            جميع التقييمات ({reviews.length})
-                          </h3>
-                          <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
-                            <span className="text-2xl font-base text-black">
-                              {averageRating.toFixed(1)}
-                            </span>
-                            <img
-                              src="/icons/star.svg"
-                              alt="star"
-                              className="w-5 h-5"
-                            />
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => setShowAllReviews(false)}
-                          className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
-                        >
-                          ×
-                        </button>
-                      </div>
-
-                      {/* محتوى التقييمات */}
-                      <div className="overflow-y-auto p-6 space-y-4">
-                        {reviews.slice(0, 10).map((review) => (
-                          <div
-                            key={review.id}
-                            className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
-                          >
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-2">
-                                <div className="flex">
-                                  {[...Array(5)].map((_, i) => (
-                                    <img
-                                      key={i}
-                                      src={
-                                        i < review.rating
-                                          ? "/icons/star.svg"
-                                          : "/icons/staroff.svg"
-                                      }
-                                      alt="star"
-                                      className="w-5 h-5"
-                                    ></img>
-                                  ))}
-                                </div>
-                                <span className="text-sm font-medium text-gray-700">
-                                  {review.rating}/5
-                                </span>
-                              </div>
-                              <span className="text-sm text-gray-500">
-                                {new Date(review.created_at).toLocaleDateString(
-                                  "ar-SA",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  },
-                                )}
-                              </span>
-                            </div>
-                            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                              {review.review_text}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+            
           </div>
 
           {/* الجانب الايسر */}
@@ -589,6 +419,178 @@ export default function ProductPageClient({
               </Link>
             </div>
           </div>
+
+          {reviews.length === 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-xl font-medium text-gray-900">
+                    تقييمات المنتج (0)
+                  </h2>
+                  <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
+                    <span className="text-2xl font-base text-black">
+                      {averageRating.toFixed(1)}
+                    </span>
+                    <img src="/icons/star.svg" alt="star" className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
+                  <p className="text-gray-700 font-medium">
+                    لا توجد تقييمات بعد
+                  </p>
+                  <p className="text-sm text-gray-500 mt-4  ">
+                    منتج جديد كن اول من يترك تقييمًا! ❤
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* التقييمات */}
+            {reviews && reviews.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-xl font-medium text-gray-900">
+                    تقييمات القسم ({reviews.length})
+                  </h2>
+                  <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
+                    <span className="text-2xl font-base text-black">
+                      {averageRating.toFixed(1)}
+                    </span>
+                    <img src="/icons/star.svg" alt="star" className="w-6 h-6" />
+                  </div>
+                </div>
+
+                <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
+                  {reviews.slice(0, 3).map((review) => (
+                    <div
+                      key={review.id}
+                      className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <img
+                                key={i}
+                                src={
+                                  i < review.rating
+                                    ? "/icons/star.svg"
+                                    : "/icons/staroff.svg"
+                                }
+                                alt="star"
+                                className="w-6 h-6"
+                              ></img>
+                            ))}
+                          </div>
+                          <span className="text-sm font-medium text-gray-700">
+                            {review.rating}/5
+                          </span>
+                        </div>
+                        <span className="text-sm text-gray-500">
+                          {new Date(review.created_at).toLocaleDateString(
+                            "ar-SA",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            },
+                          )}
+                        </span>
+                      </div>
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                        {review.review_text || "—"}
+                      </p>
+                    </div>
+                  ))}
+
+                  {/* زر عرض المزيد */}
+                  {reviews.length > 3 && (
+                    <button
+                      onClick={() => setShowAllReviews(true)}
+                      className="w-full mt-4 py-2 text-center text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                    >
+                      عرض المزيد من التقييمات ←
+                    </button>
+                  )}
+                </div>
+
+                {/* النافذة المنبثقة */}
+                {showAllReviews && (
+                  <div className="fixed inset-0 bg-black/30 bg-opacity-50 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+                      {/* رأس النافذة */}
+                      <div className="flex items-center justify-between p-6 border-b border-gray-300">
+                        <div className="flex items-center gap-3">
+                          <h3 className="text-2xl font-bold text-gray-900">
+                            جميع التقييمات ({reviews.length})
+                          </h3>
+                          <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
+                            <span className="text-2xl font-base text-black">
+                              {averageRating.toFixed(1)}
+                            </span>
+                            <img
+                              src="/icons/star.svg"
+                              alt="star"
+                              className="w-5 h-5"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setShowAllReviews(false)}
+                          className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+                        >
+                          ×
+                        </button>
+                      </div>
+
+                      {/* محتوى التقييمات */}
+                      <div className="overflow-y-auto p-6 space-y-4">
+                        {reviews.slice(0, 10).map((review) => (
+                          <div
+                            key={review.id}
+                            className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <div className="flex">
+                                  {[...Array(5)].map((_, i) => (
+                                    <img
+                                      key={i}
+                                      src={
+                                        i < review.rating
+                                          ? "/icons/star.svg"
+                                          : "/icons/staroff.svg"
+                                      }
+                                      alt="star"
+                                      className="w-5 h-5"
+                                    ></img>
+                                  ))}
+                                </div>
+                                <span className="text-sm font-medium text-gray-700">
+                                  {review.rating}/5
+                                </span>
+                              </div>
+                              <span className="text-sm text-gray-500">
+                                {new Date(review.created_at).toLocaleDateString(
+                                  "ar-SA",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  },
+                                )}
+                              </span>
+                            </div>
+                            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                              {review.review_text}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
         </div>
       </div>
       <Footer />

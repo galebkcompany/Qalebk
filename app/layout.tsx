@@ -11,10 +11,7 @@ export const metadata: Metadata = {
     default: "قالبك | أقسام جاهزة لرفع تحويل متجرك الإلكتروني",
     template: "%s | قالبك",
   },
-  icons: {
-    icon: "/favicon.ico", // هذا يكفي لمعظم المتصفحات
-    shortcut: "/favicon.ico", // اختياري لتوافق إضافي
-  },
+
   description:
     "أقسام جاهزة لمتاجر سلة، زد، وشوبيفاي تساعدك على تحسين واجهة المتجر وزيادة التحويل بدون برمجة. انسخ والصق وابدأ خلال دقائق.",
   keywords: [
@@ -38,6 +35,21 @@ export const metadata: Metadata = {
   creator: "قالبك",
   publisher: "قالبك",
 
+  // ✅ إضافة جميع الأيقونات
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" }, // SVG شفاف للمتصفحات الحديثة
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+
+  manifest: "/site.webmanifest",
+
   openGraph: {
     type: "website",
     locale: "ar_SA",
@@ -45,7 +57,7 @@ export const metadata: Metadata = {
     title: "قالبك - سوق الأقسام البرمجية لمتاجر سلة وزد",
     description:
       "أقسام برمجية جاهزة (HTML/CSS/JS) لرفع احترافية متجرك على سلة وزد خلال دقائق.",
-    siteName: "منصة قالبك",
+    siteName: "قالبك",
     images: [
       {
         url: "/og-image.png", // تأكد من وجود صورة توضح واجهة متجرك
@@ -112,7 +124,6 @@ export default function RootLayout({
           `}
         </Script>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="shortcut icon" href="/favicon.ico" />
       </head>
       <body className="font-cairo text-black">
         <WebsiteJsonLd />
