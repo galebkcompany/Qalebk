@@ -101,6 +101,11 @@ export default function Footer() {
                   عن قالبك
                 </Link>
               </li>
+              <li>
+                <Link href="/blog" className="hover:text-gray-500 transition">
+                  المدونة
+                </Link>
+              </li>
             </ul>
           </div>
 
