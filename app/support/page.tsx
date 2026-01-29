@@ -8,6 +8,10 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "دعم العملاء",
   description: "صفحة دعم العملاء لمنصة قالبك",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function SupportPage() {

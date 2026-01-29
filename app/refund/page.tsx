@@ -5,6 +5,10 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "سياسة الاسترجاع",
   description: "سياسة الاسترجاع الخاصة بمنصة قالبك",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function Refund() {

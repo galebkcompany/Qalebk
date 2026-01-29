@@ -5,6 +5,10 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "شروط الاستخدام",
   description: "شروط الاستخدام الخاصة بمنصة قالبك",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function Terms() {
