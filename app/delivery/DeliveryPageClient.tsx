@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import JSZip from "jszip";
 import {
   Download,
   FileCode,
@@ -232,77 +233,70 @@ export default function DeliveryPage() {
     }
   };
 
-  // تحميل الهدية المختارة
-  const handleDownloadGift = async (productId: string) => {
-    if (!token) return;
+// تحميل الهدية المختارة
+const handleDownloadGift = async (productId: string) => {
+  if (!token) return;
 
-    setDownloadingGift(true);
-    setActionError("");
-    setSelectedGift(productId);
+  setDownloadingGift(true);
+  setActionError("");
+  setSelectedGift(productId);
 
-    try {
-      const sessionId = localStorage.getItem(`session_${token}`);
+  try {
+    const sessionId = localStorage.getItem(`session_${token}`);
 
-      const response = await fetch(
-        `/api/free-gift/${productId}?token=${token}`,
-        {
-          headers: {
-            "x-session-id": sessionId || "",
-          },
+    const response = await fetch(
+      `/api/free-gift/${productId}?token=${token}`,
+      {
+        headers: {
+          "x-session-id": sessionId || "",
         },
-      );
+      },
+    );
 
-      const result = await response.json();
+    const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(result.error || "فشل تحميل الهدية");
-      }
-
-      // دالة مساعدة للتنزيل
-      const downloadFile = (
-        content: string,
-        filename: string,
-        type: string,
-      ) => {
-        const blob = new Blob([content], { type });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      };
-
-      // تنزيل HTML أولاً
-      if (result.html_code) {
-        downloadFile(result.html_code, "gift-section.html", "text/html");
-      }
-
-      // انتظار 500ms ثم تنزيل JavaScript
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      if (result.script_code) {
-        downloadFile(result.script_code, "gift-script.js", "text/javascript");
-      }
-
-      // تحديث الحالة وإغلاق النافذة مباشرة
-      setGiftClaimed(true);
-      setShowGiftModal(false);
-
-      setTimeout(() => {
-        setShowGiftModal(false);
-      }, 2000);
-    } catch (err: any) {
-      setActionError(err.message || "حدث خطأ في تحميل الهدية");
-      setShowGiftModal(false);
-    } finally {
-      setDownloadingGift(false);
-      setSelectedGift(null);
+    if (!response.ok) {
+      throw new Error(result.error || "فشل تحميل الهدية");
     }
-  };
 
+    // إنشاء ملف ZIP
+    const zip = new JSZip();
+
+    // إضافة ملف HTML إلى ZIP
+    if (result.html_code) {
+      zip.file("gift-section.html", result.html_code);
+    }
+
+    // إضافة ملف JavaScript إلى ZIP
+    if (result.script_code) {
+      zip.file("gift-script.js", result.script_code);
+    }
+
+    // توليد ملف ZIP
+    const zipBlob = await zip.generateAsync({ type: "blob" });
+
+    // تنزيل ملف ZIP
+    const url = URL.createObjectURL(zipBlob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "gift-section.zip";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    // تحديث الحالة وإغلاق النافذة مباشرة
+    setGiftClaimed(true);
+    setShowGiftModal(false);
+
+  } catch (err: any) {
+    setActionError(err.message || "حدث خطأ في تحميل الهدية");
+    setShowGiftModal(false);
+  } finally {
+    setDownloadingGift(false);
+    setSelectedGift(null);
+  }
+};
   const installationSteps: Record<
     string,
     { title: string; steps: string[]; note?: string }
