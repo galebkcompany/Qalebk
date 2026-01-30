@@ -33,6 +33,12 @@ interface Review {
   created_at: string;
 }
 
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 export default function ProductPageClient({
   product,
   slug,
@@ -108,6 +114,18 @@ export default function ProductPageClient({
       : 0;
 
   const handleBuyNow = () => {
+    // 1. إرسال الحدث إلى Google Analytics كحدث رئيسي
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "begin_checkout", {
+      currency: "SAR", // أو العملة التي تستخدمها
+      value: product.prices.amount,
+      items: [{
+        item_id: product.id,
+        item_name: product.name,
+        price: product.prices.amount
+      }]
+    });
+  }
     // الانتقال مباشرة إلى صفحة الدفع مع product_id
     router.push(`/checkout?product=${product.id}`);
   };
@@ -166,6 +184,19 @@ export default function ProductPageClient({
 
     const exists = favorites.some((p: any) => p.id === item.id);
     if (exists) return;
+
+    // 1. إرسال الحدث إلى Google Analytics (حدث تتبع عادي)
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", "add_to_favorite", {
+      currency: "SAR",
+      value: item.price,
+      items: [{
+        item_id: item.id,
+        item_name: item.name,
+        price: item.price
+      }]
+    });
+  }
 
     localStorage.setItem("favorites", JSON.stringify([...favorites, item]));
 
