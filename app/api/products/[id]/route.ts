@@ -7,7 +7,6 @@ export async function GET(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // ✅ حل المشكلة: await params
     const { id } = await context.params;
 
     const { data: product, error } = await supabase

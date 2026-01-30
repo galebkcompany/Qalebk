@@ -30,7 +30,7 @@ export default async function Home() {
 
   if (error) {
     console.error(error)
-    return <div className="p-6">فشل تحميل المنتجات</div>
+    return <div className="p-6">فشل تحميل المنتجات تحقق من إتصالك بالإنترنت </div>
   }
   
   return (

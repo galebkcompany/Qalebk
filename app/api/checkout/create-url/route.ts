@@ -32,9 +32,11 @@ export async function POST(request: Request) {
             },
             // ✅ تفعيل إعادة التوجيه التلقائي بعد الدفع (اختياري هنا، والأفضل ضبطه في لوحة التحكم)
             checkout_options: {
-              embed: true,
-              media: true,
-              logo: true,
+              embed: true,          // ✅ تفعيل وضع الـ Overlay
+              media: true,          // ✅ عرض صورة المنتج
+              logo: true,           // ✅ عرض شعار المتجر
+              dark: false,          // ⚙️ اختياري: الوضع الليلي (false = فاتح)
+              button_color: "#000000", // ⚙️ اختياري: لون زر الدفع
             }
           },
           relationships: {

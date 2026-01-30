@@ -70,7 +70,7 @@ export default function FavoritesPage() {
                 )}
 
                 {/* المحتوى */}
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col justify-start gap-1 sm:gap-2 flex-1 text-right">
                   {item.is_featured && (
                     <div className="inline-flex items-center w-fit gap-1 bg-purple-600/95 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full mb-1">
                       <span>مميز</span>
@@ -85,16 +85,19 @@ export default function FavoritesPage() {
                   {/* السعر + الخصم */}
                   <div className="flex flex-wrap items-center gap-3 mt-1">
                     <span className="text-xl font-bold text-black">
-                      {item.price} USD
+                      {item.price} SAR
                     </span>
 
                     <span className="text-sm text-gray-400 line-through">
-                      {item.price * 2} USD
+                      {item.price * 2} SAR
                     </span>
 
                     <span className="text-green-600 text-sm font-medium">
                       خصم 50% لفترة محدودة
                     </span>
+                  </div>
+                  <div className="text-base text-green-600 justify-left flex ">
+                    + قسم إضافي مجاني
                   </div>
                 </div>
 
@@ -113,30 +116,29 @@ export default function FavoritesPage() {
             </Link>
           ))}
         </div>
-        
       </div>
       {/* Footer */}
-        <footer className="mt-16 border-t border-gray-200 pt-4 text-sm text-gray-500">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            {/* الروابط */}
-            <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
-              <Link href="/terms" className="hover:text-gray-800 transition">
-                شروط الاستخدام
-              </Link>
-              <Link href="/privacy" className="hover:text-gray-800 transition">
-                سياسة الخصوصية
-              </Link>
-              <Link href="/refund" className="hover:text-gray-800 transition">
-                سياسة الاسترجاع
-              </Link>
-            </div>
-
-            {/* الحقوق */}
-            <div className="text-center sm:text-end">
-              جميع الحقوق محفوظة © 2026 قالبك
-            </div>
+      <footer className="mt-16 border-t border-gray-200 pt-4 text-sm text-gray-500">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          {/* الروابط */}
+          <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+            <Link href="/terms" className="hover:text-gray-800 transition">
+              شروط الاستخدام
+            </Link>
+            <Link href="/privacy" className="hover:text-gray-800 transition">
+              سياسة الخصوصية
+            </Link>
+            <Link href="/refund" className="hover:text-gray-800 transition">
+              سياسة الاسترجاع
+            </Link>
           </div>
-        </footer>
+
+          {/* الحقوق */}
+          <div className="text-center sm:text-end">
+            جميع الحقوق محفوظة © 2026 قالبك
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

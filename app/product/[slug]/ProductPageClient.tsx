@@ -293,7 +293,7 @@ export default function ProductPageClient({
             <div className="flex items-center gap-2">
               {/* زر اشترِ الآن */}
               <button
-                onClick={handleWhatsApp}
+                onClick={handleBuyNow}
                 className="
             flex-[9]
       bg-black hover:bg-gray-900
@@ -303,7 +303,7 @@ export default function ProductPageClient({
       active:scale-95
     "
               >
-                احصل على القسم
+                 الحصول على القسم
               </button>
 
               {/* زر إضافة إلى السلة */}
