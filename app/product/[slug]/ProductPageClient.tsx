@@ -528,7 +528,7 @@ export default function ProductPageClient({
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
+              <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-8">
                 {reviews.slice(0, 3).map((review) => (
                   <div
                     key={review.id}
