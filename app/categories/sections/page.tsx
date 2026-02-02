@@ -45,9 +45,10 @@ export default async function SectionsPage() {
       <main className="p-4 bg-backg">
         <h1 className="text-2xl font-bold mb-4">أقسام جاهزة</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 py-6">
-          {products.map((product: any) => (
+          {products.map((product: any, index: number) => (
             <ProductCard
               key={product.id}
+              index={index}
               product={{
                 id: product.id,
                 slug: product.slug,
