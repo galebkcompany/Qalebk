@@ -68,21 +68,6 @@ export default function ProductPageClient({
     }));
   };
 
-  const handleWhatsApp = () => {
-    if (typeof window !== "undefined" && (window as any).gtag) {
-      (window as any).gtag("event", "whatsapp_lead", {
-        event_category: "engagement",
-        event_label: "buy_section",
-        value: 1,
-      });
-    }
-    const message = encodeURIComponent(
-      "مرحبًا، أريد قسم. متجري يعمل على منصة ____ . هل يشمل الشراء شرح التركيب؟",
-    );
-
-    window.open(`https://wa.me/996579109350?text=${message}`, "_blank");
-  };
-
   useEffect(() => {
     if (!product?.id) return;
 
@@ -115,17 +100,19 @@ export default function ProductPageClient({
 
   const handleBuyNow = () => {
     // 1. إرسال الحدث إلى Google Analytics كحدث رئيسي
-  if (typeof window !== "undefined" && window.gtag) {
-    window.gtag("event", "begin_checkout", {
-      currency: "SAR", // أو العملة التي تستخدمها
-      value: product.prices.amount,
-      items: [{
-        item_id: product.id,
-        item_name: product.name,
-        price: product.prices.amount
-      }]
-    });
-  }
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "begin_checkout", {
+        currency: "SAR", // أو العملة التي تستخدمها
+        value: product.prices.amount,
+        items: [
+          {
+            item_id: product.id,
+            item_name: product.name,
+            price: product.prices.amount,
+          },
+        ],
+      });
+    }
     // الانتقال مباشرة إلى صفحة الدفع مع product_id
     router.push(`/checkout?product=${product.id}`);
   };
@@ -186,17 +173,19 @@ export default function ProductPageClient({
     if (exists) return;
 
     // 1. إرسال الحدث إلى Google Analytics (حدث تتبع عادي)
-  if (typeof window !== "undefined" && window.gtag) {
-    window.gtag("event", "add_to_favorite", {
-      currency: "SAR",
-      value: item.price,
-      items: [{
-        item_id: item.id,
-        item_name: item.name,
-        price: item.price
-      }]
-    });
-  }
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "add_to_favorite", {
+        currency: "SAR",
+        value: item.price,
+        items: [
+          {
+            item_id: item.id,
+            item_name: item.name,
+            price: item.price,
+          },
+        ],
+      });
+    }
 
     localStorage.setItem("favorites", JSON.stringify([...favorites, item]));
 
@@ -275,8 +264,6 @@ export default function ProductPageClient({
                 content={product.installation_guide}
               />
             )}
-
-            
           </div>
 
           {/* الجانب الايسر */}
@@ -334,7 +321,7 @@ export default function ProductPageClient({
       active:scale-95
     "
               >
-                 الحصول على القسم
+                الحصول على القسم
               </button>
 
               {/* زر إضافة إلى السلة */}
@@ -383,6 +370,59 @@ export default function ProductPageClient({
                   </svg>
                 )}
               </button>
+            </div>
+
+            {/* ماذا سيوفر لك قالبك */}
+            <div className="border-t border-gray-200 pt-10 space-y-8">
+              <h3 className="font-semibold text-black text-lg">
+                ماذا سيوفر لك قالبك؟
+              </h3>
+
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <img
+                    src="/icons/verifi.svg"
+                    alt="verified"
+                    className="w-5 h-5 mt-1 opacity-70"
+                  />
+                  <div>
+                    <p className="font-semibold text-black">توفير الوقت</p>
+                    <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                      لا تحتاج مصمم أو مطور. انسخ والصق القسم خلال 5 دقائق فقط.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <img
+                    src="/icons/verifi.svg"
+                    alt="verified"
+                    className="w-5 h-5 mt-1 opacity-70"
+                  />
+                  <div>
+                    <p className="font-semibold text-black">توفير المال</p>
+                    <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                      احصل على واجهة احترافية بدون دفع مئات الريالات لمصمم او مطور.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <img
+                    src="/icons/verifi.svg"
+                    alt="verified"
+                    className="w-5 h-5 mt-1 opacity-70"
+                  />
+                  <div>
+                    <p className="font-semibold text-black">
+                      زيادة معدل التحويل
+                    </p>
+                    <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                      الواجهة الاحترافية تلفت انتباه العميل وتزيد احتمالية الشراء.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* تفاصيل إضافية */}
@@ -452,176 +492,174 @@ export default function ProductPageClient({
           </div>
 
           {reviews.length === 0 && (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xl font-medium text-gray-900">
-                    تقييمات المنتج (0)
-                  </h2>
-                  <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
-                    <span className="text-2xl font-base text-black">
-                      {averageRating.toFixed(1)}
-                    </span>
-                    <img src="/icons/star.svg" alt="star" className="w-6 h-6" />
-                  </div>
-                </div>
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-                  <p className="text-gray-700 font-medium">
-                    لا توجد تقييمات بعد
-                  </p>
-                  <p className="text-sm text-gray-500 mt-4  ">
-                    منتج جديد كن اول من يترك تقييمًا! ❤
-                  </p>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-medium text-gray-900">
+                  تقييمات المنتج (0)
+                </h2>
+                <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
+                  <span className="text-2xl font-base text-black">
+                    {averageRating.toFixed(1)}
+                  </span>
+                  <img src="/icons/star.svg" alt="star" className="w-6 h-6" />
                 </div>
               </div>
-            )}
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
+                <p className="text-gray-700 font-medium">لا توجد تقييمات بعد</p>
+                <p className="text-sm text-gray-500 mt-4  ">
+                  منتج جديد كن اول من يترك تقييمًا! ❤
+                </p>
+              </div>
+            </div>
+          )}
 
-            {/* التقييمات */}
-            {reviews && reviews.length > 0 && (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xl font-medium text-gray-900">
-                    تقييمات القسم ({reviews.length})
-                  </h2>
-                  <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
-                    <span className="text-2xl font-base text-black">
-                      {averageRating.toFixed(1)}
-                    </span>
-                    <img src="/icons/star.svg" alt="star" className="w-6 h-6" />
-                  </div>
+          {/* التقييمات */}
+          {reviews && reviews.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-medium text-gray-900">
+                  تقييمات القسم ({reviews.length})
+                </h2>
+                <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
+                  <span className="text-2xl font-base text-black">
+                    {averageRating.toFixed(1)}
+                  </span>
+                  <img src="/icons/star.svg" alt="star" className="w-6 h-6" />
                 </div>
+              </div>
 
-                <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
-                  {reviews.slice(0, 3).map((review) => (
-                    <div
-                      key={review.id}
-                      className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <div className="flex">
-                            {[...Array(5)].map((_, i) => (
-                              <img
-                                key={i}
-                                src={
-                                  i < review.rating
-                                    ? "/icons/star.svg"
-                                    : "/icons/staroff.svg"
-                                }
-                                alt="star"
-                                className="w-6 h-6"
-                              ></img>
-                            ))}
-                          </div>
-                          <span className="text-sm font-medium text-gray-700">
-                            {review.rating}/5
-                          </span>
+              <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
+                {reviews.slice(0, 3).map((review) => (
+                  <div
+                    key={review.id}
+                    className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <img
+                              key={i}
+                              src={
+                                i < review.rating
+                                  ? "/icons/star.svg"
+                                  : "/icons/staroff.svg"
+                              }
+                              alt="star"
+                              className="w-6 h-6"
+                            ></img>
+                          ))}
                         </div>
-                        <span className="text-sm text-gray-500">
-                          {new Date(review.created_at).toLocaleDateString(
-                            "ar-SA",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            },
-                          )}
+                        <span className="text-sm font-medium text-gray-700">
+                          {review.rating}/5
                         </span>
                       </div>
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {review.review_text || "—"}
-                      </p>
+                      <span className="text-sm text-gray-500">
+                        {new Date(review.created_at).toLocaleDateString(
+                          "ar-SA",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          },
+                        )}
+                      </span>
                     </div>
-                  ))}
-
-                  {/* زر عرض المزيد */}
-                  {reviews.length > 3 && (
-                    <button
-                      onClick={() => setShowAllReviews(true)}
-                      className="w-full mt-4 py-2 text-center text-gray-600 hover:text-gray-900 font-medium transition-colors"
-                    >
-                      عرض المزيد من التقييمات ←
-                    </button>
-                  )}
-                </div>
-
-                {/* النافذة المنبثقة */}
-                {showAllReviews && (
-                  <div className="fixed inset-0 bg-black/30 bg-opacity-50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
-                      {/* رأس النافذة */}
-                      <div className="flex items-center justify-between p-6 border-b border-gray-300">
-                        <div className="flex items-center gap-3">
-                          <h3 className="text-2xl font-bold text-gray-900">
-                            جميع التقييمات ({reviews.length})
-                          </h3>
-                          <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
-                            <span className="text-2xl font-base text-black">
-                              {averageRating.toFixed(1)}
-                            </span>
-                            <img
-                              src="/icons/star.svg"
-                              alt="star"
-                              className="w-5 h-5"
-                            />
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => setShowAllReviews(false)}
-                          className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
-                        >
-                          ×
-                        </button>
-                      </div>
-
-                      {/* محتوى التقييمات */}
-                      <div className="overflow-y-auto p-6 space-y-4">
-                        {reviews.slice(0, 10).map((review) => (
-                          <div
-                            key={review.id}
-                            className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
-                          >
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-2">
-                                <div className="flex">
-                                  {[...Array(5)].map((_, i) => (
-                                    <img
-                                      key={i}
-                                      src={
-                                        i < review.rating
-                                          ? "/icons/star.svg"
-                                          : "/icons/staroff.svg"
-                                      }
-                                      alt="star"
-                                      className="w-5 h-5"
-                                    ></img>
-                                  ))}
-                                </div>
-                                <span className="text-sm font-medium text-gray-700">
-                                  {review.rating}/5
-                                </span>
-                              </div>
-                              <span className="text-sm text-gray-500">
-                                {new Date(review.created_at).toLocaleDateString(
-                                  "ar-SA",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  },
-                                )}
-                              </span>
-                            </div>
-                            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                              {review.review_text}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                      {review.review_text || "—"}
+                    </p>
                   </div>
+                ))}
+
+                {/* زر عرض المزيد */}
+                {reviews.length > 3 && (
+                  <button
+                    onClick={() => setShowAllReviews(true)}
+                    className="w-full mt-4 py-2 text-center text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                  >
+                    عرض المزيد من التقييمات ←
+                  </button>
                 )}
               </div>
-            )}
+
+              {/* النافذة المنبثقة */}
+              {showAllReviews && (
+                <div className="fixed inset-0 bg-black/30 bg-opacity-50 z-50 flex items-center justify-center p-4">
+                  <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+                    {/* رأس النافذة */}
+                    <div className="flex items-center justify-between p-6 border-b border-gray-300">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-2xl font-bold text-gray-900">
+                          جميع التقييمات ({reviews.length})
+                        </h3>
+                        <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
+                          <span className="text-2xl font-base text-black">
+                            {averageRating.toFixed(1)}
+                          </span>
+                          <img
+                            src="/icons/star.svg"
+                            alt="star"
+                            className="w-5 h-5"
+                          />
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setShowAllReviews(false)}
+                        className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+                      >
+                        ×
+                      </button>
+                    </div>
+
+                    {/* محتوى التقييمات */}
+                    <div className="overflow-y-auto p-6 space-y-4">
+                      {reviews.slice(0, 10).map((review) => (
+                        <div
+                          key={review.id}
+                          className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <img
+                                    key={i}
+                                    src={
+                                      i < review.rating
+                                        ? "/icons/star.svg"
+                                        : "/icons/staroff.svg"
+                                    }
+                                    alt="star"
+                                    className="w-5 h-5"
+                                  ></img>
+                                ))}
+                              </div>
+                              <span className="text-sm font-medium text-gray-700">
+                                {review.rating}/5
+                              </span>
+                            </div>
+                            <span className="text-sm text-gray-500">
+                              {new Date(review.created_at).toLocaleDateString(
+                                "ar-SA",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                },
+                              )}
+                            </span>
+                          </div>
+                          <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                            {review.review_text}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <Footer />
