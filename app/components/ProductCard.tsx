@@ -11,11 +11,17 @@ type Product = {
   is_featured: boolean;
 };
 
-// وظيفة مساعدة لتحويل رابط Cloudinary إلى رابط محسن تلقائياً
-const getOptimizedCloudinaryUrl = (url: string) => {
+// الدالة المطورة لتحسين الصور والفيديوهات
+const getOptimizedMediaUrl = (url: string) => {
   if (!url || !url.includes("cloudinary.com")) return url;
-  // إضافة f_auto لتحويل الصيغة لـ WebP و q_auto للضغط الذكي
-  return url.replace("/upload/", "/upload/f_auto,q_auto,w_700/");
+
+  if (url.endsWith(".mp4")) {
+    // تحسين الفيديو: q_auto للضغط، vc_auto لاختيار الكوديك المناسب، w_1280 لتحديد العرض
+    return url.replace("/video/upload/", "/video/upload/q_auto,vc_auto,w_1280/");
+  }
+  
+  // تحسين الصورة: f_auto للصيغة، q_auto للضغط، w_700 للعرض
+  return url.replace("/image/upload/", "/image/upload/f_auto,q_auto,w_700/");
 };
 
 export default function ProductCard({
@@ -27,7 +33,7 @@ export default function ProductCard({
 }) {
   const discountedPrice = product.price; // هو السعر بعد الخصم
   const originalPrice = product.price * 2; // السعر قبل الخصم
-  const optimizedUrl = getOptimizedCloudinaryUrl(product.image_url);
+  const optimizedUrl = getOptimizedMediaUrl(product.image_url);
 
   return (
     <Link href={`/product/${product.slug}`} className="block">
@@ -43,7 +49,7 @@ export default function ProductCard({
 
           {product.image_url.endsWith(".mp4") ? (
             <video
-              src={product.image_url}
+              src={optimizedUrl}
               muted
               loop
               autoPlay
