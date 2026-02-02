@@ -62,8 +62,8 @@ export default function Header() {
                 <Image
                   src="/images/logo/logo.png"
                   alt="قالبك Qalebk"
-                  width={362}
-                  height={689}
+                  width={689}
+                  height={362}
                   priority
                   sizes="(max-width: 640px) 90px, 120px"
                   className="w-full h-auto object-contain"

@@ -38,9 +38,10 @@ export default async function Home() {
     <Hero />
     <main className="p-4 bg-backg">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 py-6">
-        {products.map((product: any) => (
+        {products.map((product: any, index: number) => (
           <ProductCard
             key={product.id}
+            index={index}
             product={{
               id: product.id,
               slug: product.slug,
@@ -50,6 +51,7 @@ export default async function Home() {
               platforms: product.platforms,
               is_featured: product.is_featured,
             }}
+            
           />
         ))}
       </div>

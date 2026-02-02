@@ -20,11 +20,14 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**.cloudinary.com', // إذا كنت تستخدم Cloudinary
+        hostname: '**.cloudinary.com',
+        pathname: '/**',
       },
     ],
     formats: ['image/avif', 'image/webp'], // تحسين الصور
   },
+
+  
 
   compress: true, 
 };

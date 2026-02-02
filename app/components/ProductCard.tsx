@@ -11,15 +11,29 @@ type Product = {
   is_featured: boolean;
 };
 
-export default function ProductCard({ product }: { product: Product }) {
+// وظيفة مساعدة لتحويل رابط Cloudinary إلى رابط محسن تلقائياً
+const getOptimizedCloudinaryUrl = (url: string) => {
+  if (!url || !url.includes("cloudinary.com")) return url;
+  // إضافة f_auto لتحويل الصيغة لـ WebP و q_auto للضغط الذكي
+  return url.replace("/upload/", "/upload/f_auto,q_auto,w_700/");
+};
+
+export default function ProductCard({
+  product,
+  index,
+}: {
+  product: Product;
+  index: number;
+}) {
   const discountedPrice = product.price; // هو السعر بعد الخصم
   const originalPrice = product.price * 2; // السعر قبل الخصم
+  const optimizedUrl = getOptimizedCloudinaryUrl(product.image_url);
 
   return (
     <Link href={`/product/${product.slug}`} className="block">
       <div className="bg-white rounded-lg border border-gray-200  overflow-hidden hover:shadow-md transition">
         {/* Image */}
-        <div className="relative w-full overflow-hidden bg-gray-100">
+        <div className="relative w-full overflow-hidden bg-gray-100 ">
           {product.is_featured && (
             <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 sm:px-3 rounded-full shadow-lg">
               <span>مميز</span>
@@ -35,16 +49,22 @@ export default function ProductCard({ product }: { product: Product }) {
               autoPlay
               playsInline
               preload="metadata"
-              className="w-full h-full object-cover "
+              className="w-full h-full object-cover"
             />
           ) : (
-            <img
-              src={product.image_url}
-              alt={product.name}
-              draggable={false}
-              className="w-full h-full object-cover cursor-grab active:cursor-grabbing select-none"
-            />
-          )}  
+            <div className="relative w-full overflow-hidden bg-gray-100">
+              <Image
+                src={optimizedUrl}
+                alt={product.name}
+                width={700}
+                height={700}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority={index < 2}
+                className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
+                draggable={false}
+              />
+            </div>
+          )}
         </div>
 
         {/* Content */}
