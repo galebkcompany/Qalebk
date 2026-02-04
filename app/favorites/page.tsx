@@ -55,17 +55,23 @@ export default function FavoritesPage() {
             <Link href={item.product_url} key={item.id} className="block">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-gray-200 p-4 rounded-xl bg-white hover:shadow-sm transition-all cursor-pointer gap-4">
                 {/* الصورة */}
-                {item.image_url && (
+                {item.image_url.endsWith(".mp4") ? (
+                  <video
+                    src={item.image_url}
+                    muted
+                    loop
+                    autoPlay
+                    playsInline
+                    preload="metadata"
+                    className="w-80 h-full object-cover"
+                  />
+                ) : (
                   <img
                     src={item.image_url}
                     alt={item.name}
-                    className="
-            w-full
-            sm:w-80
-            rounded-xl
-            bg-gray-100
-            object-cover
-          "
+                    className="w-80 h-full object-cover"
+                    loading="lazy"
+                    draggable={false}
                   />
                 )}
 
@@ -92,16 +98,12 @@ export default function FavoritesPage() {
                       {item.price * 2} SAR
                     </span>
 
-                    <span className="text-green-600 text-sm font-medium">
-                      خصم 50% لفترة محدودة
+                    <span className="text-green-600 text-base font-medium">
+                      احصل على قسم إضافي مجاناً
                     </span>
-                  </div>
-                  <div className="text-base text-green-600 justify-left flex ">
-                    + قسم إضافي مجاني
                   </div>
                 </div>
 
-                {/* زر الإزالة – يمنع الانتقال */}
                 <button
                   onClick={(e) => {
                     e.preventDefault();

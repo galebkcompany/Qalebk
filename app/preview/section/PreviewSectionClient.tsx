@@ -42,15 +42,17 @@ export default function PreviewSection() {
     fetchCode();
   }, [productId]);
 
-  // تحديث محتوى الـ iframe عند تغيير الكود أو وضع العرض
   useEffect(() => {
     if (iframeRef.current && injectionCode) {
       const doc =
         iframeRef.current.contentDocument ||
         iframeRef.current.contentWindow?.document;
       if (doc) {
-        // بناء محتوى الـ HTML الكامل داخل الـ iframe
-        // نضمن تضمين Tailwind CSS ليعمل الكود المحقون بشكل صحيح
+        // 1. التحقق من نوع الكود
+        const isScript =
+          injectionCode.trim().startsWith("<script") ||
+          injectionCode.trim().startsWith("(function");
+
         const fullHtml = `
 <!DOCTYPE html>
 <html>
@@ -59,106 +61,118 @@ export default function PreviewSection() {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { margin:0; background:white }
+    body { margin:0; background:white; overflow-x: hidden; }
+    /* إخفاء السكرول بار */
+    html, body { scrollbar-width: none; -ms-overflow-style: none; }
+    body::-webkit-scrollbar { display: none; }
+    
+    .animate-shimmer {
+      animation: shimmer 2s infinite linear;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+    }
     @keyframes shimmer {
       0% { background-position: -200% 0; }
       100% { background-position: 200% 0; }
     }
-    .animate-shimmer {
-      animation: shimmer 2s infinite linear;
-    }
-    /* لإخفاء Scrollbar لكن السماح بالتمرير */
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: auto; /* التمرير مسموح */
-  -ms-overflow-style: none; /* لإخفاء Scrollbar في IE/Edge */
-  scrollbar-width: none; /* لإخفاء Scrollbar في Firefox */
-}
-
-body::-webkit-scrollbar {
-  display: none; /* لإخفاء Scrollbar في Chrome, Safari, Opera */
-}
-
   </style>
 </head>
-
 <body>
 
 <!-- Header Skeleton -->
+
 <header class="bg-white border-b sticky top-0 z-50">
+
   <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+
     <div class="w-32 h-8 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer bg-[length:200%_100%]"></div>
+
     <div class="hidden md:flex gap-6">
+
       ${Array.from({ length: 4 })
+
         .map(
           () => `
+
         <div class="w-20 h-4 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer bg-[length:200%_100%]"></div>
+
       `,
         )
+
         .join("")}
+
     </div>
+
     <div class="flex gap-4">
+
       ${Array.from({ length: 3 })
+
         .map(
           () => `
+
         <div class="w-8 h-8 rounded-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%]"></div>
+
       `,
         )
+
         .join("")}
+
     </div>
+
   </div>
+
 </header>
 
-<!-- Hero Injection -->
 <div id="hero-injection-point">
-  ${injectionCode}
+  ${!isScript ? injectionCode : ""}
 </div>
 
-<!-- Products Skeleton -->
-<section class="max-w-7xl mx-auto px-4 py-8">
-  <div class="mb-8">
-    <div class="w-48 h-8 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer bg-[length:200%_100%] mb-2"></div>
-    <div class="w-64 h-4 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer bg-[length:200%_100%]"></div>
-  </div>
-
-  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-    ${Array.from({ length: 8 })
-      .map(
-        () => `
-      <div class="border rounded-lg overflow-hidden">
-        <div class="h-64 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer bg-[length:200%_100%]"></div>
-        <div class="p-4 space-y-3">
-          <div class="h-4 w-3/4 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer bg-[length:200%_100%]"></div>
-          <div class="h-4 w-1/2 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer bg-[length:200%_100%]"></div>
-          <div class="flex justify-between pt-2">
-            <div class="h-6 w-20 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-shimmer bg-[length:200%_100%]"></div>
-            <div class="h-9 w-24 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full animate-shimmer bg-[length:200%_100%]"></div>
-          </div>
-        </div>
-      </div>
-    `,
-      )
-      .join("")}
+<section class="max-w-7xl mx-auto px-4 py-12">
+  <div class="w-48 h-8 animate-shimmer rounded mb-8"></div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    ${`<div class="border rounded-lg p-4 space-y-4">
+        <div class="h-48 animate-shimmer rounded"></div>
+        <div class="h-4 w-3/4 animate-shimmer rounded"></div>
+        <div class="h-4 w-1/2 animate-shimmer rounded"></div>
+      </div>`.repeat(8)}
   </div>
 </section>
 
+
+
+
+
 <!-- Footer Skeleton -->
+
 <footer class="bg-gray-900 mt-16">
+
   <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+
     ${Array.from({ length: 4 })
+
       .map(
         () => `
+
       <div class="space-y-4">
+
         <div class="w-32 h-5 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 rounded animate-shimmer bg-[length:200%_100%]"></div>
+
         <div class="w-24 h-3 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 rounded animate-shimmer bg-[length:200%_100%]"></div>
+
         <div class="w-24 h-3 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 rounded animate-shimmer bg-[length:200%_100%]"></div>
+
       </div>
+
     `,
       )
+
       .join("")}
+
   </div>
+
 </footer>
+
+${isScript ? (injectionCode.includes("<script") ? injectionCode : `<script>${injectionCode}<\/script>`) : ""}
 
 </body>
 </html>
