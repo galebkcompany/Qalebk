@@ -7,7 +7,6 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import LoginModal from "@/app/components/LoginModal";
 
-
 export default function Header() {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
@@ -52,6 +51,10 @@ export default function Header() {
 
   return (
     <>
+      <div className="w-full bg-green-500 text-white text-center text-sm py-2 font-medium">
+         قسم إضافي مجاني عند شراء أي قسم اليوم
+      </div>
+
       <header className="w-full border-b border-gray-300 bg-backg py-1 text-black">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex flex-col gap-2 py-2 sm:flex-row sm:h-16 sm:items-center sm:gap-6 sm:py-0">
@@ -161,8 +164,6 @@ export default function Header() {
                             <Package size={20} />
                             <span>مشترياتي</span>
                           </Link>
-
-                          
                         </>
                       ) : (
                         <>
