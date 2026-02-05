@@ -196,12 +196,40 @@ export default function ProductPageClient({
   return (
     <main className="min-h-screen bg-white" dir="rtl">
       <div className="max-w-7xl mx-auto px-2 py-8">
-        {/* الحاوية الرئيسية - تخطيط ثنائي الأعمدة */}
+        {/* صورة المنتج - تظهر أولاً على جميع الشاشات */}
+        <div className="relative bg-gray-100 border border-gray-100 overflow-hidden w-full lg:hidden">
+          {product.is_featured && (
+            <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 sm:px-3 sm:text-[11px] rounded-full shadow-lg">
+              <span>مميز</span>
+              <span>★</span>
+            </div>
+          )}
+          {product.image_url.endsWith(".mp4") ? (
+            <video
+              src={product.image_url}
+              muted
+              loop
+              autoPlay
+              playsInline
+              preload="metadata"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <img
+              src={product.image_url}
+              alt={product.name}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              draggable={false}
+            />
+          )}
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-12">
-          {/* الجانب الايمن - الصورة والمحتوى */}
-          <div className=" space-y-8">
-            {/* صورة المنتج */}
-            <div className="relative bg-gray-100 border border-gray-100 overflow-hidden  w-full">
+          {/* الجانب الايمن - المحتوى فقط */}
+          <div className="space-y-8 order-2 lg:order-1">
+            {/* صورة المنتج - تظهر فقط على الشاشات الكبيرة */}
+            <div className="hidden lg:block relative bg-gray-100 border border-gray-100 overflow-hidden w-full">
               {product.is_featured && (
                 <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 sm:px-3 sm:text-[11px] rounded-full shadow-lg">
                   <span>مميز</span>
@@ -267,7 +295,7 @@ export default function ProductPageClient({
           </div>
 
           {/* الجانب الايسر */}
-          <div className=" space-y-6  py-8">
+          <div className="space-y-6 py-8 order-1 lg:order-2">
             {/* قسم السعر */}
             <div className="space-y-2">
               <div className="flex items-center gap-3">
@@ -402,7 +430,8 @@ export default function ProductPageClient({
                   <div>
                     <p className="font-semibold text-black">توفير المال</p>
                     <p className="text-gray-600 text-sm leading-relaxed mt-1">
-                      احصل على واجهة احترافية بدون دفع مئات الريالات لمصمم او مطور.
+                      احصل على واجهة احترافية بدون دفع مئات الريالات لمصمم او
+                      مطور.
                     </p>
                   </div>
                 </div>
@@ -418,7 +447,8 @@ export default function ProductPageClient({
                       زيادة معدل التحويل
                     </p>
                     <p className="text-gray-600 text-sm leading-relaxed mt-1">
-                      الواجهة الاحترافية تلفت انتباه العميل وتزيد احتمالية الشراء.
+                      الواجهة الاحترافية تلفت انتباه العميل وتزيد احتمالية
+                      الشراء.
                     </p>
                   </div>
                 </div>
@@ -490,9 +520,9 @@ export default function ProductPageClient({
               </Link>
             </div>
           </div>
-
-          {reviews.length === 0 && (
-            <div className="space-y-3">
+        </div>
+        {reviews.length === 0 && (
+            <div className="space-y-3  mt-10 m-2 md:ml-10 md:mr-10">
               <div className="flex items-center gap-3">
                 <h2 className="text-xl font-medium text-gray-900">
                   تقييمات المنتج (0)
@@ -515,7 +545,7 @@ export default function ProductPageClient({
 
           {/* التقييمات */}
           {reviews && reviews.length > 0 && (
-            <div className="space-y-3">
+              <div className="space-y-3 mt-10 m-2 md:ml-10 md:mr-10">
               <div className="flex items-center gap-3">
                 <h2 className="text-xl font-medium text-gray-900">
                   تقييمات القسم ({reviews.length})
@@ -660,7 +690,6 @@ export default function ProductPageClient({
               )}
             </div>
           )}
-        </div>
       </div>
       <Footer />
     </main>
