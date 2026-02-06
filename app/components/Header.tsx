@@ -48,11 +48,64 @@ export default function Header() {
   }, []);
 
   const categories = [{ name: "أقسام جاهزة", href: "/categories/sections" }];
+const BASE_HOURS = 48; // يومين
+const STORAGE_KEY = "free-section-timer";
+
+const [timeLeft, setTimeLeft] = useState({
+  days: 0,
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+});
+
+useEffect(() => {
+  let endTime = localStorage.getItem(STORAGE_KEY);
+
+  if (!endTime) {
+    // عشوائية ذكية
+    const randomHours = Math.floor(Math.random() * 4) + 3; // 3 → 6 ساعات
+    const randomMinutes = Math.floor(Math.random() * 50) + 10; // 10 → 59 دقيقة
+
+    const totalMs =
+      (BASE_HOURS - randomHours) * 60 * 60 * 1000 -
+      randomMinutes * 60 * 1000;
+
+    const end = Date.now() + totalMs;
+
+    localStorage.setItem(STORAGE_KEY, end.toString());
+    endTime = end.toString();
+  }
+
+  const interval = setInterval(() => {
+    const diff = Number(endTime) - Date.now();
+
+    if (diff <= 0) {
+      clearInterval(interval);
+      setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      return;
+    }
+
+    setTimeLeft({
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((diff / (1000 * 60)) % 60),
+      seconds: Math.floor((diff / 1000) % 60),
+    });
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
 
   return (
     <>
-      <div className="w-full bg-green-500 text-white text-center text-sm py-2 font-medium">
-         قسم إضافي مجاني عند شراء أي قسم اليوم
+      <div className="w-full bg-green-500 text-white text-center text-sm py-2 font-medium flex items-center justify-center gap-2 flex-wrap">
+        <span>احصل على قسم إضافي مجانًا</span>
+
+        <span className="bg-white/20 px-2 py-1 rounded-md text-xs font-bold">
+          {timeLeft.days}ي :{timeLeft.hours.toString().padStart(2, "0")}س :
+          {timeLeft.minutes.toString().padStart(2, "0")}د :
+          {timeLeft.seconds.toString().padStart(2, "0")}ث
+        </span>
       </div>
 
       <header className="w-full border-b border-gray-300 bg-backg py-1 text-black">

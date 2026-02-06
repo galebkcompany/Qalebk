@@ -356,7 +356,7 @@ export default function ProductPageClient({
                   الحصول على القسم
                 </button>
 
-                {/* زر إضافة إلى السلة */}
+                {/* زر إضافة إلى المفضله */}
                 <button
                   onClick={() => {
                     addToFavorite();
