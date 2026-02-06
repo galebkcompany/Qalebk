@@ -98,6 +98,48 @@ export default function ProductPageClient({
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : 0;
 
+  const productSchema: any = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    name: product.name,
+    image: [product.image_url],
+    description: product.description,
+    sku: product.id,
+    brand: {
+      "@type": "Brand",
+      name: "قالبك",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `https://qalebk.com/product/${slug}`,
+      priceCurrency: product.prices.currency,
+      price: product.prices.amount.toString(),
+      availability: "https://schema.org/InStock",
+      priceValidUntil: "2026-12-31",
+    },
+  };
+
+  if (reviews.length > 0) {
+    productSchema.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: averageRating.toFixed(1),
+      reviewCount: reviews.length,
+    };
+
+    productSchema.review = reviews.slice(0, 3).map((r) => ({
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: "عميل",
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: r.rating,
+      },
+      reviewBody: r.review_text || "",
+    }));
+  }
+
   const handleBuyNow = () => {
     // 1. إرسال الحدث إلى Google Analytics كحدث رئيسي
     if (typeof window !== "undefined" && window.gtag) {
@@ -194,153 +236,159 @@ export default function ProductPageClient({
   };
 
   return (
-    <main className="min-h-screen bg-white" dir="rtl">
-      <div className="max-w-7xl mx-auto px-2 py-8">
-        {/* صورة المنتج - تظهر أولاً على جميع الشاشات */}
-        <div className="relative bg-gray-100 border border-gray-100 overflow-hidden w-full lg:hidden">
-          {product.is_featured && (
-            <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 sm:px-3 sm:text-[11px] rounded-full shadow-lg">
-              <span>مميز</span>
-              <span>★</span>
-            </div>
-          )}
-          {product.image_url.endsWith(".mp4") ? (
-            <video
-              src={product.image_url}
-              muted
-              loop
-              autoPlay
-              playsInline
-              preload="metadata"
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <img
-              src={product.image_url}
-              alt={product.name}
-              className="w-full h-full object-cover"
-              loading="lazy"
-              draggable={false}
-            />
-          )}
-        </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-12">
-          {/* الجانب الايمن - المحتوى فقط */}
-          <div className="space-y-8 order-2 lg:order-1">
-            {/* صورة المنتج - تظهر فقط على الشاشات الكبيرة */}
-            <div className="hidden lg:block relative bg-gray-100 border border-gray-100 overflow-hidden w-full">
-              {product.is_featured && (
-                <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 sm:px-3 sm:text-[11px] rounded-full shadow-lg">
-                  <span>مميز</span>
-                  <span>★</span>
-                </div>
-              )}
-              {product.image_url.endsWith(".mp4") ? (
-                <video
-                  src={product.image_url}
-                  muted
-                  loop
-                  autoPlay
-                  playsInline
-                  preload="metadata"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <img
-                  src={product.image_url}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  draggable={false}
-                />
-              )}
-            </div>
-            {/* تفاصيل المنتج */}
-            <ProductSection title="وصف القسم" content={product.description} />
-            {/* الحقول القابلة للتخصيص */}
-            {product.customizable_fields?.trim() && (
-              <ProductSection
-                title="الحقول القابلة للتخصيص"
-                content={product.customizable_fields}
-              />
-            )}
-            {/* المنصات المدعومة */}
-            {product.platforms && product.platforms.length > 0 && (
-              <div className="space-y-3">
-                <h2 className="text-xl font-medium text-gray-900">
-                  المنصات المدعومة
-                </h2>
-                <div className=" rounded-xl p-6">
-                  <div className="flex flex-wrap gap-2">
-                    {product.platforms.map((platform, index) => (
-                      <span
-                        key={index}
-                        className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-800"
-                      >
-                        {platform}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+      <main className="min-h-screen bg-white" dir="rtl">
+        <div className="max-w-7xl mx-auto px-2 py-8">
+          {/* صورة المنتج - تظهر أولاً على جميع الشاشات */}
+          <div className="relative bg-gray-100 border border-gray-100 overflow-hidden w-full lg:hidden">
+            {product.is_featured && (
+              <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 sm:px-3 sm:text-[11px] rounded-full shadow-lg">
+                <span>مميز</span>
+                <span>★</span>
               </div>
             )}
-            {/* طريقة التركيب */}
-            {product.installation_guide && (
-              <ProductSection
-                title="طريقة التركيب"
-                content={product.installation_guide}
+            {product.image_url.endsWith(".mp4") ? (
+              <video
+                src={product.image_url}
+                muted
+                loop
+                autoPlay
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <img
+                src={product.image_url}
+                alt={product.name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                draggable={false}
               />
             )}
           </div>
 
-          {/* الجانب الايسر */}
-          <div className="space-y-6 py-8 order-1 lg:order-2">
-            {/* قسم السعر */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <span className="text-3xl font-bold text-black">
-                  {product.prices.amount} {product.prices.currency}
-                </span>
-                <span className="text-lg text-gray-400 line-through">
-                  {originalPrice} {product.prices.currency}
-                </span>
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-12">
+            {/* الجانب الايمن - المحتوى فقط */}
+            <div className="space-y-8 order-2 lg:order-1">
+              {/* صورة المنتج - تظهر فقط على الشاشات الكبيرة */}
+              <div className="hidden lg:block relative bg-gray-100 border border-gray-100 overflow-hidden w-full">
+                {product.is_featured && (
+                  <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[10px] uppercase tracking-wider font-bold px-2 py-1 sm:px-3 sm:text-[11px] rounded-full shadow-lg">
+                    <span>مميز</span>
+                    <span>★</span>
+                  </div>
+                )}
+                {product.image_url.endsWith(".mp4") ? (
+                  <video
+                    src={product.image_url}
+                    muted
+                    loop
+                    autoPlay
+                    playsInline
+                    preload="metadata"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    draggable={false}
+                  />
+                )}
               </div>
-              <p className="text-green-500 font-medium text-base">
-                قسم إضافي مجاني لأول 10 عملاء!
-              </p>
+              {/* تفاصيل المنتج */}
+              <ProductSection title="وصف القسم" content={product.description} />
+              {/* الحقول القابلة للتخصيص */}
+              {product.customizable_fields?.trim() && (
+                <ProductSection
+                  title="الحقول القابلة للتخصيص"
+                  content={product.customizable_fields}
+                />
+              )}
+              {/* المنصات المدعومة */}
+              {product.platforms && product.platforms.length > 0 && (
+                <div className="space-y-3">
+                  <h2 className="text-xl font-medium text-gray-900">
+                    المنصات المدعومة
+                  </h2>
+                  <div className=" rounded-xl p-6">
+                    <div className="flex flex-wrap gap-2">
+                      {product.platforms.map((platform, index) => (
+                        <span
+                          key={index}
+                          className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-800"
+                        >
+                          {platform}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {/* طريقة التركيب */}
+              {product.installation_guide && (
+                <ProductSection
+                  title="طريقة التركيب"
+                  content={product.installation_guide}
+                />
+              )}
             </div>
 
-            {/* العنوان*/}
-            <div className="space-y-2">
-              <p className="text-gray-800 leading-relaxed text-base">
-                {product.name}
-              </p>
-            </div>
-
-            {product.preview_url ? (
-              <Link
-                href={`${product.preview_url}?id=${product.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-full flex items-center justify-center gap-2 transition-colors duration-200 active:scale-95"
-              >
-                معاينة القسم
-                <Eye size={20} />
-              </Link>
-            ) : (
-              <div className="w-full bg-gray-100 text-gray-500 font-semibold py-3 px-6 rounded-full flex items-center justify-center gap-2 cursor-not-allowed">
-                لا يوجد رابط معاينة
-                <Eye size={20} />
+            {/* الجانب الايسر */}
+            <div className="space-y-6 py-8 order-1 lg:order-2">
+              {/* قسم السعر */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-bold text-black">
+                    {product.prices.amount} {product.prices.currency}
+                  </span>
+                  <span className="text-lg text-gray-400 line-through">
+                    {originalPrice} {product.prices.currency}
+                  </span>
+                </div>
+                <p className="text-green-500 font-medium text-base">
+                  قسم إضافي مجاني لأول 10 عملاء!
+                </p>
               </div>
-            )}
 
-            {/* زر الشراء والإضافة إلى المفضلة */}
-            <div className="flex items-center gap-2">
-              {/* زر اشترِ الآن */}
-              <button
-                onClick={handleBuyNow}
-                className="
+              {/* العنوان*/}
+              <div className="space-y-2">
+                <p className="text-gray-800 leading-relaxed text-base">
+                  {product.name}
+                </p>
+              </div>
+
+              {product.preview_url ? (
+                <Link
+                  href={`${product.preview_url}?id=${product.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-full flex items-center justify-center gap-2 transition-colors duration-200 active:scale-95"
+                >
+                  معاينة القسم
+                  <Eye size={20} />
+                </Link>
+              ) : (
+                <div className="w-full bg-gray-100 text-gray-500 font-semibold py-3 px-6 rounded-full flex items-center justify-center gap-2 cursor-not-allowed">
+                  لا يوجد رابط معاينة
+                  <Eye size={20} />
+                </div>
+              )}
+
+              {/* زر الشراء والإضافة إلى المفضلة */}
+              <div className="flex items-center gap-2">
+                {/* زر اشترِ الآن */}
+                <button
+                  onClick={handleBuyNow}
+                  className="
             flex-[9]
       bg-black hover:bg-gray-900
       text-white font-semibold
@@ -348,18 +396,18 @@ export default function ProductPageClient({
       transition-all duration-300
       active:scale-95
     "
-              >
-                الحصول على القسم
-              </button>
+                >
+                  الحصول على القسم
+                </button>
 
-              {/* زر إضافة إلى السلة */}
-              <button
-                onClick={() => {
-                  addToFavorite();
-                  handleAddToFavorite();
-                }}
-                disabled={favoriteState !== "idle"}
-                className={`
+                {/* زر إضافة إلى السلة */}
+                <button
+                  onClick={() => {
+                    addToFavorite();
+                    handleAddToFavorite();
+                  }}
+                  disabled={favoriteState !== "idle"}
+                  className={`
       flex-[2]
       h-[47px]
       flex items-center justify-center
@@ -372,156 +420,159 @@ export default function ProductPageClient({
       }
       disabled:cursor-not-allowed
     `}
-              >
-                {favoriteState === "idle" && (
-                  <Heart size={20} className="text-black" />
-                )}
+                >
+                  {favoriteState === "idle" && (
+                    <Heart size={20} className="text-black" />
+                  )}
 
-                {favoriteState === "loading" && (
-                  <span className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                )}
+                  {favoriteState === "loading" && (
+                    <span className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                  )}
 
-                {favoriteState === "success" && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5 text-black"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={3}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 13l4 4L19 7"
+                  {favoriteState === "success" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5 text-black"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={3}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  )}
+                </button>
+              </div>
+
+              {/* ماذا سيوفر لك قالبك */}
+              <div className="border-t border-gray-200 pt-10 space-y-8">
+                <h3 className="font-semibold text-black text-lg">
+                  ماذا سيوفر لك قالبك؟
+                </h3>
+
+                <div className="space-y-6">
+                  <div className="flex gap-4">
+                    <img
+                      src="/icons/verifi.svg"
+                      alt="verified"
+                      className="w-5 h-5 mt-1 opacity-70"
                     />
-                  </svg>
-                )}
-              </button>
-            </div>
-
-            {/* ماذا سيوفر لك قالبك */}
-            <div className="border-t border-gray-200 pt-10 space-y-8">
-              <h3 className="font-semibold text-black text-lg">
-                ماذا سيوفر لك قالبك؟
-              </h3>
-
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <img
-                    src="/icons/verifi.svg"
-                    alt="verified"
-                    className="w-5 h-5 mt-1 opacity-70"
-                  />
-                  <div>
-                    <p className="font-semibold text-black">توفير الوقت</p>
-                    <p className="text-gray-600 text-sm leading-relaxed mt-1">
-                      لا تحتاج مصمم أو مطور. انسخ والصق القسم خلال 5 دقائق فقط.
-                    </p>
+                    <div>
+                      <p className="font-semibold text-black">توفير الوقت</p>
+                      <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                        لا تحتاج مصمم أو مطور. انسخ والصق القسم خلال 5 دقائق
+                        فقط.
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex gap-4">
-                  <img
-                    src="/icons/verifi.svg"
-                    alt="verified"
-                    className="w-5 h-5 mt-1 opacity-70"
-                  />
-                  <div>
-                    <p className="font-semibold text-black">توفير المال</p>
-                    <p className="text-gray-600 text-sm leading-relaxed mt-1">
-                      احصل على واجهة احترافية بدون دفع مئات الريالات لمصمم او
-                      مطور.
-                    </p>
+                  <div className="flex gap-4">
+                    <img
+                      src="/icons/verifi.svg"
+                      alt="verified"
+                      className="w-5 h-5 mt-1 opacity-70"
+                    />
+                    <div>
+                      <p className="font-semibold text-black">توفير المال</p>
+                      <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                        احصل على واجهة احترافية بدون دفع مئات الريالات لمصمم او
+                        مطور.
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex gap-4">
-                  <img
-                    src="/icons/verifi.svg"
-                    alt="verified"
-                    className="w-5 h-5 mt-1 opacity-70"
-                  />
-                  <div>
-                    <p className="font-semibold text-black">
-                      زيادة معدل التحويل
-                    </p>
-                    <p className="text-gray-600 text-sm leading-relaxed mt-1">
-                      الواجهة الاحترافية تلفت انتباه العميل وتزيد احتمالية
-                      الشراء.
-                    </p>
+                  <div className="flex gap-4">
+                    <img
+                      src="/icons/verifi.svg"
+                      alt="verified"
+                      className="w-5 h-5 mt-1 opacity-70"
+                    />
+                    <div>
+                      <p className="font-semibold text-black">
+                        زيادة معدل التحويل
+                      </p>
+                      <p className="text-gray-600 text-sm leading-relaxed mt-1">
+                        الواجهة الاحترافية تلفت انتباه العميل وتزيد احتمالية
+                        الشراء.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* تفاصيل إضافية */}
-            <div className="space-y-3 border-t border-gray-200 pt-7">
-              <h3 className="font-semibold text-black text-lg">تفاصيل القسم</h3>
+              {/* تفاصيل إضافية */}
+              <div className="space-y-3 border-t border-gray-200 pt-7">
+                <h3 className="font-semibold text-black text-lg">
+                  تفاصيل القسم
+                </h3>
 
-              {/* يباع بواسطة */}
-              {/* <DetailItem label="يباع بواسطة" value="قالبك" /> */}
+                {/* يباع بواسطة */}
+                {/* <DetailItem label="يباع بواسطة" value="قالبك" /> */}
 
-              {/* نوع المنتج */}
-              <DetailItem label="نوع المنتج" value="منتج رقمي" />
+                {/* نوع المنتج */}
+                <DetailItem label="نوع المنتج" value="منتج رقمي" />
 
-              {/* طريقة الاستلام - ضرورية جداً لـ Paddle */}
-              <DetailItem label="طريقة الاستلام" value="تحميل فوري" />
+                {/* طريقة الاستلام - ضرورية جداً لـ Paddle */}
+                <DetailItem label="طريقة الاستلام" value="تحميل فوري" />
 
-              {/* ما الذي ستحصل عليه؟ */}
-              <DetailItem label="انواع الملف" value=" ملف HTML و ملفJS" />
+                {/* ما الذي ستحصل عليه؟ */}
+                <DetailItem label="انواع الملف" value=" ملف HTML و ملفJS" />
 
-              {/*  التجاوب */}
-              <DetailItem
-                label="التجاوب"
-                value="متجاوب مع جميع الأجهزة والشاشات"
-              />
-            </div>
+                {/*  التجاوب */}
+                <DetailItem
+                  label="التجاوب"
+                  value="متجاوب مع جميع الأجهزة والشاشات"
+                />
+              </div>
 
-            {/* الأسئلة الشائعة والدعم */}
-            <div className="space-y-6">
-              {/* التوصيل */}
-              <CollapsibleSection
-                id="delivery"
-                title="التوصيل: تحميل فوري"
-                content="المنتجات التي يتم تنزيلها فوراً لا تقبل عمليات الاسترجاع أو الاستبدال، في حال وجود مشكلة يرجي التواصل مع الدعم."
-                isOpen={openSections["delivery"] || false}
-                onToggle={() => toggleSection("delivery")}
-              />
+              {/* الأسئلة الشائعة والدعم */}
+              <div className="space-y-6">
+                {/* التوصيل */}
+                <CollapsibleSection
+                  id="delivery"
+                  title="التوصيل: تحميل فوري"
+                  content="المنتجات التي يتم تنزيلها فوراً لا تقبل عمليات الاسترجاع أو الاستبدال، في حال وجود مشكلة يرجي التواصل مع الدعم."
+                  isOpen={openSections["delivery"] || false}
+                  onToggle={() => toggleSection("delivery")}
+                />
 
-              {/* الأسئلة الشائعة */}
-              <FaqSection
-                title="الأسئلة الشائعة"
-                faqs={[
-                  {
-                    question: "هل المنتج يعمل على جميع المنصات؟",
-                    answer:
-                      "نعم، المنتج متوافق مع جميع المنصات الرئيسية المذكورة في قسم المنصات المدعومة. ويعمل ايضعا على المنصات التي تدعم الحقن البرمجي.",
-                  },
-                  {
-                    question: "هل يمكن استرجاع المنتج بعد الشراء؟",
-                    answer:
-                      "بما أن المنتج رقمي ويتم تحميله فورًا، لا يمكن استرجاعه بعد الشراء. الا في حال وجود مشكلة تقنية",
-                  },
-                  {
-                    question: "هل أحتاج خبرة برمجية لتركيبه؟",
-                    answer:
-                      "لا، المنتج مصمم يكون سهل التركيب  وليعمل مباشرة على متجرك، ويتم توفير دليل تركيب واضح.",
-                  },
-                ]}
-              />
+                {/* الأسئلة الشائعة */}
+                <FaqSection
+                  title="الأسئلة الشائعة"
+                  faqs={[
+                    {
+                      question: "هل المنتج يعمل على جميع المنصات؟",
+                      answer:
+                        "نعم، المنتج متوافق مع جميع المنصات الرئيسية المذكورة في قسم المنصات المدعومة. ويعمل ايضعا على المنصات التي تدعم الحقن البرمجي.",
+                    },
+                    {
+                      question: "هل يمكن استرجاع المنتج بعد الشراء؟",
+                      answer:
+                        "بما أن المنتج رقمي ويتم تحميله فورًا، لا يمكن استرجاعه بعد الشراء. الا في حال وجود مشكلة تقنية",
+                    },
+                    {
+                      question: "هل أحتاج خبرة برمجية لتركيبه؟",
+                      answer:
+                        "لا، المنتج مصمم يكون سهل التركيب  وليعمل مباشرة على متجرك، ويتم توفير دليل تركيب واضح.",
+                    },
+                  ]}
+                />
 
-              {/* تواصل مع الدعم */}
-              <Link
-                href="/support"
-                className="w-full bg-gray-50 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-5 rounded-full transition-colors duration-200 text-sm"
-              >
-                هل تحتاج الى المساعده؟ تواصل معنا
-              </Link>
+                {/* تواصل مع الدعم */}
+                <Link
+                  href="/support"
+                  className="w-full bg-gray-50 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-5 rounded-full transition-colors duration-200 text-sm"
+                >
+                  هل تحتاج الى المساعده؟ تواصل معنا
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-        {reviews.length === 0 && (
+          {reviews.length === 0 && (
             <div className="space-y-3  mt-10 m-2 md:ml-10 md:mr-10">
               <div className="flex items-center gap-3">
                 <h2 className="text-xl font-medium text-gray-900">
@@ -545,7 +596,7 @@ export default function ProductPageClient({
 
           {/* التقييمات */}
           {reviews && reviews.length > 0 && (
-              <div className="space-y-3 mt-10 m-2 md:ml-10 md:mr-10">
+            <div className="space-y-3 mt-10 m-2 md:ml-10 md:mr-10">
               <div className="flex items-center gap-3">
                 <h2 className="text-xl font-medium text-gray-900">
                   تقييمات القسم ({reviews.length})
@@ -690,9 +741,10 @@ export default function ProductPageClient({
               )}
             </div>
           )}
-      </div>
-      <Footer />
-    </main>
+        </div>
+        <Footer />
+      </main>
+    </>
   );
 }
 
