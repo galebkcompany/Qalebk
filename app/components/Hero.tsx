@@ -13,13 +13,13 @@ const HeroSection = () => {
         {/* العنوان الرئيسي */}
         <h1 className="  leading-tight mb-3 sm:mb-8 tracking-tight">
           <span className="text-slate-800 text-3xl sm:text-5xl md:text-6xl lg:text-6xl">
-            متجرك يبدو عاديًا؟
+             متجرك لا يبيع لأن واجهته لا تُقنع
           </span>
           <br />
           {/* تأثير التوهج الأزرق على خلفية بيضاء */}
           <span className="relative inline-block mt-2 md:mt-6">
             <span className="text-2xl sm:text-4xl md:text-5xl lg:text-[42px] text-blue-600 ">
-              حوّله إلى واجهة احترافية بأقسام جاهزة تزيد التحويل — بدون برمجة
+               أضف قسم بطل جاهز لمتجرك يزيد التحويل خلال دقائق — بدون برمجة
             </span>
           </span>
         </h1>
@@ -31,7 +31,7 @@ const HeroSection = () => {
             {" "}
             سلة، زد، شوبيفاي{" "}
           </span>
-         والمواقع المخصصة انسخ والصق فقط — بدون تعقيد.
+          — انسخ والصق فقط
         </p>
 
         {/* زر الإجراء CTA */}
