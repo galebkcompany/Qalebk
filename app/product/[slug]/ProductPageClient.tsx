@@ -98,47 +98,6 @@ export default function ProductPageClient({
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : 0;
 
-  const productSchema: any = {
-    "@context": "https://schema.org/",
-    "@type": "Product",
-    name: product.name,
-    image: [product.image_url],
-    description: product.description,
-    sku: product.id,
-    brand: {
-      "@type": "Brand",
-      name: "قالبك",
-    },
-    offers: {
-      "@type": "Offer",
-      url: `https://qalebk.com/product/${slug}`,
-      priceCurrency: product.prices.currency,
-      price: product.prices.amount.toString(),
-      availability: "https://schema.org/InStock",
-      priceValidUntil: "2026-12-31",
-    },
-  };
-
-  if (reviews.length > 0) {
-    productSchema.aggregateRating = {
-      "@type": "AggregateRating",
-      ratingValue: averageRating.toFixed(1),
-      reviewCount: reviews.length,
-    };
-
-    productSchema.review = reviews.slice(0, 3).map((r) => ({
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "عميل",
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: r.rating,
-      },
-      reviewBody: r.review_text || "",
-    }));
-  }
 
   const handleBuyNow = () => {
     // 1. إرسال الحدث إلى Google Analytics كحدث رئيسي
@@ -237,10 +196,7 @@ export default function ProductPageClient({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-      />
+      
 
       <main className="min-h-screen bg-white" dir="rtl">
         <div className="max-w-7xl mx-auto px-2 py-8">
