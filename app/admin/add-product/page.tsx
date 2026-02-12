@@ -175,163 +175,175 @@ export default function AddProduct() {
     });
   };
 
-const handleSubmit = async () => {
-  if (!name || !image) {
-    alert("الاسم والصورة مطلوبان");
-    return;
-  }
+  const handleSubmit = async () => {
+    if (!name || !image) {
+      alert("الاسم والصورة مطلوبان");
+      return;
+    }
 
-  if (!htmlCssCode && !scriptEmbedCode) {
-    alert("يجب إضافة كود واحد على الأقل");
-    return;
-  }
+    if (!htmlCssCode && !scriptEmbedCode) {
+      alert("يجب إضافة كود واحد على الأقل");
+      return;
+    }
 
-  // ✅ التحقق من بيانات الفئات
-  if (selectedCategories.length > 0) {
-    for (const cat of selectedCategories) {
-      const catLabel = CATEGORY_OPTIONS.find((c) => c.value === cat)?.label;
+    // ✅ التحقق من بيانات الفئات
+    if (selectedCategories.length > 0) {
+      for (const cat of selectedCategories) {
+        const catLabel = CATEGORY_OPTIONS.find((c) => c.value === cat)?.label;
 
-      // التحقق من Screenshot
-      if (!categoryImages[cat]?.screenshot) {
-        alert(`يجب رفع صورة Screenshot لفئة: ${catLabel}`);
-        return;
-      }
+        // التحقق من Screenshot
+        if (!categoryImages[cat]?.screenshot) {
+          alert(`يجب رفع صورة Screenshot لفئة: ${catLabel}`);
+          return;
+        }
 
-      // ✅ التحقق من كود المعاينة
-      if (!categoryImages[cat]?.preview_code?.trim()) {
-        alert(`يجب إضافة كود المعاينة لفئة: ${catLabel}`);
-        return;
+        // ✅ التحقق من كود المعاينة
+        if (!categoryImages[cat]?.preview_code?.trim()) {
+          alert(`يجب إضافة كود المعاينة لفئة: ${catLabel}`);
+          return;
+        }
       }
     }
-  }
 
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    // 1. رفع الصورة الرئيسية
-    const formData = new FormData();
-    formData.append("file", image);
-    formData.append(
-      "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
-    );
-
-    const isVideo = image.type.startsWith("video/");
-    const resourceType = isVideo ? "video" : "image";
-    const uploadUrl = `${process.env.NEXT_PUBLIC_CLOUDINARY_URL!.replace(
-      "/image/upload",
-      `/${resourceType}/upload`
-    )}`;
-
-    const cloudRes = await axios.post(uploadUrl, formData);
-    const image_url = cloudRes.data.secure_url;
-    const image_public_id = cloudRes.data.public_id;
-
-    // 2. ✅ رفع صور الفئات وحفظ البيانات
-    const categoryImagesData: any = {};
-
-    for (const category of selectedCategories) {
-      const catData = categoryImages[category];
-
-      // رفع Screenshot
-      const screenshotFormData = new FormData();
-      screenshotFormData.append("file", catData.screenshot!);
-      screenshotFormData.append(
+    try {
+      // 1. رفع الصورة الرئيسية
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append(
         "upload_preset",
         process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
       );
 
-      const screenshotRes = await axios.post(
-        process.env.NEXT_PUBLIC_CLOUDINARY_URL!,
-        screenshotFormData,
+      const isVideo = image.type.startsWith("video/");
+      const resourceType = isVideo ? "video" : "image";
+      const uploadUrl = `${process.env.NEXT_PUBLIC_CLOUDINARY_URL!.replace(
+        "/image/upload",
+        `/${resourceType}/upload`,
+      )}`;
+
+      const cloudRes = await axios.post(uploadUrl, formData);
+      const image_url = cloudRes.data.secure_url;
+      const image_public_id = cloudRes.data.public_id;
+
+      // 2. ✅ رفع صور/فيديوهات الفئات وحفظ البيانات
+      const categoryImagesData: any = {};
+
+      for (const category of selectedCategories) {
+        const catData = categoryImages[category];
+
+        // ✅ تحديد نوع الملف
+        const isVideo = catData.screenshot!.type.startsWith("video/");
+        const resourceType = isVideo ? "video" : "image";
+
+        // ✅ بناء URL الرفع
+        const baseUrl = process.env.NEXT_PUBLIC_CLOUDINARY_URL!;
+        const screenshotUploadUrl = baseUrl.replace(
+          "/image/upload",
+          `/${resourceType}/upload`,
+        );
+
+        // رفع Screenshot
+        const screenshotFormData = new FormData();
+        screenshotFormData.append("file", catData.screenshot!);
+        screenshotFormData.append(
+          "upload_preset",
+          process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
+        );
+
+        const screenshotRes = await axios.post(
+          screenshotUploadUrl,
+          screenshotFormData,
+        );
+
+        // حفظ البيانات
+        categoryImagesData[category] = {
+          screenshot: screenshotRes.data.secure_url,
+          preview_code: catData.preview_code || "",
+        };
+      }
+      // 3. توليد slug
+      const finalSlug = slug || slugify(name, { lower: true, strict: true });
+
+      // 4. حفظ المنتج مع بيانات الفئات
+      const { data: productData, error: productError } = await supabase
+        .from("products")
+        .insert([
+          {
+            name,
+            description: fullDesc,
+            product_type: productType,
+            image_url,
+            image_public_id,
+            preview_url:
+              productType === "section" ? "/preview/section" : "/preview/page",
+            variant_id: priceId,
+            is_featured: isFeatured,
+            platforms,
+            installation_guide: installation,
+            customizable_fields: customizableFields,
+            slug: finalSlug,
+            category_images: categoryImagesData, // ✅ الآن يحتوي على البيانات
+          },
+        ])
+        .select()
+        .single();
+
+      if (productError) throw productError;
+
+      // 5. حفظ الأكواد
+      const codes = [];
+      if (htmlCssCode) {
+        codes.push({
+          product_id: productData.id,
+          type: "html_css",
+          code: htmlCssCode,
+        });
+      }
+      if (scriptEmbedCode) {
+        codes.push({
+          product_id: productData.id,
+          type: "script_embed",
+          code: scriptEmbedCode,
+          preview: previewCode || scriptEmbedCode,
+        });
+      }
+
+      if (codes.length > 0) {
+        const { error: codesError } = await supabase
+          .from("codes")
+          .insert(codes);
+        if (codesError) throw codesError;
+      }
+
+      alert("✅ تم حفظ المنتج والأكواد والصور بنجاح!");
+
+      // إعادة تعيين النموذج
+      setName("");
+      setFullDesc("");
+      setProductType("section");
+      setPriceId("13.49");
+      setIsFeatured(false);
+      setPlatforms([]);
+      setSelectedCategories([]);
+      setCategoryImages({});
+      setInstallation("");
+      setCustomizableFields(
+        "يمكن تخصيص الألوان، النصوص، الخطوط، حجم العناصر، وترتيب المحتوى والصور بما يتناسب مع هوية متجرك او موقعك",
       );
-
-      // ✅ حفظ البيانات في categoryImagesData
-      categoryImagesData[category] = {
-        screenshot: screenshotRes.data.secure_url,
-        preview_code: catData.preview_code || "",
-      };
+      setSlug("");
+      setImage(null);
+      setHtmlCssCode("");
+      setScriptEmbedCode("");
+      setPreviewCode("");
+    } catch (error: any) {
+      console.error("❌ خطأ:", error);
+      alert("حدث خطأ: " + (error.message || "خطأ غير معروف"));
+    } finally {
+      setLoading(false);
     }
-
-    // 3. توليد slug
-    const finalSlug = slug || slugify(name, { lower: true, strict: true });
-
-    // 4. حفظ المنتج مع بيانات الفئات
-    const { data: productData, error: productError } = await supabase
-      .from("products")
-      .insert([
-        {
-          name,
-          description: fullDesc,
-          product_type: productType,
-          image_url,
-          image_public_id,
-          preview_url:
-            productType === "section" ? "/preview/section" : "/preview/page",
-          variant_id: priceId,
-          is_featured: isFeatured,
-          platforms,
-          installation_guide: installation,
-          customizable_fields: customizableFields,
-          slug: finalSlug,
-          category_images: categoryImagesData, // ✅ الآن يحتوي على البيانات
-        },
-      ])
-      .select()
-      .single();
-
-    if (productError) throw productError;
-
-    // 5. حفظ الأكواد
-    const codes = [];
-    if (htmlCssCode) {
-      codes.push({
-        product_id: productData.id,
-        type: "html_css",
-        code: htmlCssCode,
-      });
-    }
-    if (scriptEmbedCode) {
-      codes.push({
-        product_id: productData.id,
-        type: "script_embed",
-        code: scriptEmbedCode,
-        preview: previewCode || scriptEmbedCode,
-      });
-    }
-
-    if (codes.length > 0) {
-      const { error: codesError } = await supabase.from("codes").insert(codes);
-      if (codesError) throw codesError;
-    }
-
-    alert("✅ تم حفظ المنتج والأكواد والصور بنجاح!");
-
-    // إعادة تعيين النموذج
-    setName("");
-    setFullDesc("");
-    setProductType("section");
-    setPriceId("13.49");
-    setIsFeatured(false);
-    setPlatforms([]);
-    setSelectedCategories([]);
-    setCategoryImages({});
-    setInstallation("");
-    setCustomizableFields(
-      "يمكن تخصيص الألوان، النصوص، الخطوط، حجم العناصر، وترتيب المحتوى والصور بما يتناسب مع هوية متجرك او موقعك"
-    );
-    setSlug("");
-    setImage(null);
-    setHtmlCssCode("");
-    setScriptEmbedCode("");
-    setPreviewCode("");
-  } catch (error: any) {
-    console.error("❌ خطأ:", error);
-    alert("حدث خطأ: " + (error.message || "خطأ غير معروف"));
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-white to-gray-100 p-6">
@@ -614,7 +626,7 @@ const handleSubmit = async () => {
                       </label>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,video/mp4"
                         onChange={(e) =>
                           handleScreenshotUpload(
                             category,
