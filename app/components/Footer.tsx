@@ -58,16 +58,16 @@ export default function Footer() {
 
               
               <Link
-                href="https://x.com/Qalebk1"
+                href="https://www.instagram.com/qalebk/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="border border-gray-500 h-12 w-12 flex items-center justify-center rounded-full hover:bg-gray-200 transition"
               >
                 <Image
-                  src="/icons/x.svg"
+                  src="/icons/instagram.svg"
                   alt="X"
-                  width={26}
-                  height={26}
+                  width={28}
+                  height={28}
                   className=""
                 />
               </Link>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
+
 type Product = {
   id: string;
   slug: string;
@@ -9,6 +10,12 @@ type Product = {
   price: number;
   platforms: string[];
   is_featured: boolean;
+  category_images?: { // العمود الجديد
+    [key: string]: {
+      screenshot: string;
+      preview_assets: string[];
+    }
+  };
 };
 
 // الدالة المطورة لتحسين الصور والفيديوهات
@@ -27,16 +34,25 @@ const getOptimizedMediaUrl = (url: string) => {
 export default function ProductCard({
   product,
   index,
+  currentNiche,
 }: {
   product: Product;
   index: number;
+  currentNiche?: string;
 }) {
+  
+
+// المنطق: إذا وجدنا صورة للنيش الحالي في الـ jsonb نستخدمها، وإلا نستخدم الصورة الافتراضية
+  const displayImage = (currentNiche && product.category_images?.[currentNiche]?.screenshot) 
+    ? product.category_images[currentNiche].screenshot 
+    : product.image_url;
+
   const discountedPrice = product.price; // هو السعر بعد الخصم
   const originalPrice = product.price * 2; // السعر قبل الخصم
-  const optimizedUrl = getOptimizedMediaUrl(product.image_url);
+  const optimizedUrl = getOptimizedMediaUrl(displayImage);
 
   return (
-    <Link href={`/product/${product.slug}`} className="block">
+    <Link href={`/product/${product.slug}${currentNiche ? `?niche=${currentNiche}` : ''}`} className="block">
       <div className="bg-white rounded-lg border border-gray-200  overflow-hidden hover:shadow-md transition">
         {/* Image */}
         <div className="relative w-full overflow-hidden bg-gray-100 ">
@@ -66,7 +82,7 @@ export default function ProductCard({
                 height={700}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority={index < 2}
-                className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
+                className="w-full h-auto object-cover transition-transform duration-300"
                 draggable={false}
               />
             </div>
@@ -76,7 +92,7 @@ export default function ProductCard({
         {/* Content */}
         <div className="p-3 sm:p-4 space-y-3">
           {/* Description */}
-          <p className="text-sm text-gray-700 line-clamp-2">{product.name}</p>
+          <p className="text-base text-gray-700 line-clamp-2">{product.name}</p>
 
           {/* Price + Icons */}
           <div className="flex items-center justify-between text-black">

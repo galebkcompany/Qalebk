@@ -70,6 +70,7 @@ export default function DeliveryPage() {
   const [selectedGift, setSelectedGift] = useState<string | null>(null);
   const [downloadingGift, setDownloadingGift] = useState(false);
   const [giftClaimed, setGiftClaimed] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -168,7 +169,11 @@ export default function DeliveryPage() {
     }
     try {
       await navigator.clipboard.writeText(data.product.copy_code);
+      setCopied(true); // تفعيل حالة النسخ
       setActionError("");
+
+      // إعادة الأيقونة لشكلها الأصلي بعد ثانيتين
+      setTimeout(() => setCopied(false), 2000);
     } catch {
       setActionError("فشل نسخ الكود");
     }
@@ -233,70 +238,69 @@ export default function DeliveryPage() {
     }
   };
 
-// تحميل الهدية المختارة
-const handleDownloadGift = async (productId: string) => {
-  if (!token) return;
+  // تحميل الهدية المختارة
+  const handleDownloadGift = async (productId: string) => {
+    if (!token) return;
 
-  setDownloadingGift(true);
-  setActionError("");
-  setSelectedGift(productId);
+    setDownloadingGift(true);
+    setActionError("");
+    setSelectedGift(productId);
 
-  try {
-    const sessionId = localStorage.getItem(`session_${token}`);
+    try {
+      const sessionId = localStorage.getItem(`session_${token}`);
 
-    const response = await fetch(
-      `/api/free-gift/${productId}?token=${token}`,
-      {
-        headers: {
-          "x-session-id": sessionId || "",
+      const response = await fetch(
+        `/api/free-gift/${productId}?token=${token}`,
+        {
+          headers: {
+            "x-session-id": sessionId || "",
+          },
         },
-      },
-    );
+      );
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (!response.ok) {
-      throw new Error(result.error || "فشل تحميل الهدية");
+      if (!response.ok) {
+        throw new Error(result.error || "فشل تحميل الهدية");
+      }
+
+      // إنشاء ملف ZIP
+      const zip = new JSZip();
+
+      // إضافة ملف HTML إلى ZIP
+      if (result.html_code) {
+        zip.file("gift-section.html", result.html_code);
+      }
+
+      // إضافة ملف JavaScript إلى ZIP
+      if (result.script_code) {
+        zip.file("gift-script.js", result.script_code);
+      }
+
+      // توليد ملف ZIP
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+
+      // تنزيل ملف ZIP
+      const url = URL.createObjectURL(zipBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "gift-section.zip";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      // تحديث الحالة وإغلاق النافذة مباشرة
+      setGiftClaimed(true);
+      setShowGiftModal(false);
+    } catch (err: any) {
+      setActionError(err.message || "حدث خطأ في تحميل الهدية");
+      setShowGiftModal(false);
+    } finally {
+      setDownloadingGift(false);
+      setSelectedGift(null);
     }
-
-    // إنشاء ملف ZIP
-    const zip = new JSZip();
-
-    // إضافة ملف HTML إلى ZIP
-    if (result.html_code) {
-      zip.file("gift-section.html", result.html_code);
-    }
-
-    // إضافة ملف JavaScript إلى ZIP
-    if (result.script_code) {
-      zip.file("gift-script.js", result.script_code);
-    }
-
-    // توليد ملف ZIP
-    const zipBlob = await zip.generateAsync({ type: "blob" });
-
-    // تنزيل ملف ZIP
-    const url = URL.createObjectURL(zipBlob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "gift-section.zip";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    // تحديث الحالة وإغلاق النافذة مباشرة
-    setGiftClaimed(true);
-    setShowGiftModal(false);
-
-  } catch (err: any) {
-    setActionError(err.message || "حدث خطأ في تحميل الهدية");
-    setShowGiftModal(false);
-  } finally {
-    setDownloadingGift(false);
-    setSelectedGift(null);
-  }
-};
+  };
   const installationSteps: Record<
     string,
     { title: string; steps: string[]; note?: string }
@@ -386,7 +390,7 @@ const handleDownloadGift = async (productId: string) => {
         <div className="flex-1 space-y-6 order-2 lg:order-1">
           <div className="bg-white p-6 lg:p-8 rounded-2xl border border-gray-200">
             <div className="flex flex-col md:flex-row gap-6 mb-8">
-              {data.product.image_url.endsWith(".mp4") ? (
+              {/* {data.product.image_url.endsWith(".mp4") ? (
                 <video
                   src={data.product.image_url}
                   muted
@@ -402,10 +406,13 @@ const handleDownloadGift = async (productId: string) => {
                   className="w-full sm:w-80 rounded-xl bg-gray-100 object-cover"
                   alt={data.product.name}
                 />
-              )}
+              )} */}
               <div className="flex-1 py-2">
-                <h2 className="font-bold text-2xl mb-2">{data.product.name}</h2>
-                
+                <h2 className="font-bold text-2xl mb-2 text-green-600 flex items-center gap-2">
+                  <CheckCircle className="w-6 h-6" />
+                  شكراً لثقتك بنا!
+                </h2>
+                <p className="text-gray-600">تم تجهيز أكواد بنجاح.</p>
               </div>
             </div>
 
@@ -464,10 +471,18 @@ const handleDownloadGift = async (productId: string) => {
 
                     <button
                       onClick={copyCode}
-                      className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-gray-300"
-                      title="نسخ الكود"
+                      className={`p-2 rounded-lg transition-all ${
+                        copied
+                          ? "bg-green-500/20 text-green-400"
+                          : "hover:bg-gray-700 text-gray-300"
+                      }`}
+                      title={copied ? "تم النسخ!" : "نسخ الكود"}
                     >
-                      <Copy className="w-4 h-4" />
+                      {copied ? (
+                        <CheckCircle className="w-4 h-4" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -485,9 +500,13 @@ const handleDownloadGift = async (productId: string) => {
                 <div className="absolute bottom-4 left-4 right-4">
                   <button
                     onClick={copyCode}
-                    className="w-full py-2 bg-gray-700 hover:bg-gray-600 text-white text-xs font-bold rounded-lg transition-all opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
+                    className={`w-full py-2 text-xs font-bold rounded-lg transition-all transform ${
+                      copied
+                        ? "bg-green-600 text-white scale-105"
+                        : "bg-gray-700 hover:bg-gray-600 text-white opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0"
+                    }`}
                   >
-                    نسخ الكود
+                    {copied ? "تم نسخ الكود بنجاح!" : "نسخ الكود"}
                   </button>
                 </div>
               </div>

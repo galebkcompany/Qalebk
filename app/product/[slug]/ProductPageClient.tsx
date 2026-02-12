@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabaseClient";
 import Footer from "@/app/components/Footer";
 import FaqSection from "@/app/components/FaqSection";
+import { useSearchParams } from "next/navigation";
 
 interface Product {
   id: string;
@@ -17,7 +18,7 @@ interface Product {
   customizable_fields?: string | null;
   preview_url: string | null;
   platforms: string[];
-  installation_guide: string | null;
+  // installation_guide: string | null;
   is_featured: boolean;
   prices: {
     amount: number;
@@ -43,13 +44,24 @@ export default function ProductPageClient({
   product,
   slug,
 }: {
-  product: Product;
+  product: any;
   slug: string;
 }) {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const currentNiche = searchParams.get("niche");
+
+  const displayImage =
+    currentNiche && product.category_images?.[currentNiche]?.screenshot
+      ? product.category_images[currentNiche].screenshot
+      : product.image_url;
+
+  const previewUrlWithNiche = product.preview_url
+    ? `${product.preview_url}?id=${product.id}${currentNiche ? `&niche=${currentNiche}` : ""}`
+    : null;
 
   const router = useRouter();
 
@@ -98,7 +110,6 @@ export default function ProductPageClient({
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : 0;
 
-
   const handleBuyNow = () => {
     // 1. إرسال الحدث إلى Google Analytics كحدث رئيسي
     if (typeof window !== "undefined" && window.gtag) {
@@ -115,7 +126,8 @@ export default function ProductPageClient({
       });
     }
     // الانتقال مباشرة إلى صفحة الدفع مع product_id
-    router.push(`/checkout?product=${product.id}`);
+    const encodedImg = encodeURIComponent(displayImage);
+    router.push(`/checkout?product=${product.id}&img=${encodedImg}`);
   };
 
   const handleAddToFavorite = () => {
@@ -132,72 +144,43 @@ export default function ProductPageClient({
     }, 1200);
   };
 
-  // const addToCart = () => {
-  //   const item = {
-  //     id: product.id,
-  //     name: product.name,
-  //     price: product.prices.amount,
-  //     image_url: product.image_url,
-  //     slug: slug,
-  //     is_featured: product.is_featured,
-  //     product_url: `/product/${slug}`, // الرابط الذي سيتم الانتقال إليه
-  //   };
-
-  //   // جلب البيانات الحالية من localStorage
-  //   const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-  //   const exists = cart.some((p: any) => p.id === item.id);
-  //   if (exists) return;
-
-  //   // حفظ القائمة الجديدة
-  //   localStorage.setItem("cart", JSON.stringify([...cart, item]));
-
-  //   // إرسال تنبيه لتحديث العداد في القائمة العلوية (Navbar) إذا وجد
-  //   window.dispatchEvent(new Event("cart-updated"));
-  // };
-
   const addToFavorite = () => {
     const item = {
       id: product.id,
       name: product.name,
       price: product.prices.amount,
-      image_url: product.image_url,
+      // التعديل هنا: نستخدم displayImage بدلاً من product.image_url
+      image_url: displayImage,
       slug: slug,
       is_featured: product.is_featured,
-      product_url: `/product/${slug}`,
+      // لتذكر الصورة المختارة حتى عند العودة من المفضلة
+      product_url: `/product/${slug}?img=${encodeURIComponent(displayImage)}`,
     };
 
-    // جلب المفضلة الحالية
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 
-    const exists = favorites.some((p: any) => p.id === item.id);
+    // ملاحظة: إذا كنت تريد السماح للمستخدم بإضافة نفس المنتج بصور مختلفة للمفضلة،
+    // يجب أن نغير شرط الـ exists ليشمل الصورة أيضاً
+    const exists = favorites.some(
+      (p: any) => p.id === item.id && p.image_url === item.image_url,
+    );
     if (exists) return;
 
-    // 1. إرسال الحدث إلى Google Analytics (حدث تتبع عادي)
+    // إرسال الحدث لـ Google Analytics
     if (typeof window !== "undefined" && window.gtag) {
       window.gtag("event", "add_to_favorite", {
         currency: "SAR",
         value: item.price,
-        items: [
-          {
-            item_id: item.id,
-            item_name: item.name,
-            price: item.price,
-          },
-        ],
+        items: [{ item_id: item.id, item_name: item.name, price: item.price }],
       });
     }
 
     localStorage.setItem("favorites", JSON.stringify([...favorites, item]));
-
-    // إشعار لتحديث العداد (Navbar مثلاً)
     window.dispatchEvent(new Event("favorites-updated"));
   };
 
   return (
     <>
-      
-
       <main className="min-h-screen bg-white" dir="rtl">
         <div className="max-w-7xl mx-auto px-2 py-8">
           {/* صورة المنتج - تظهر أولاً على جميع الشاشات */}
@@ -210,7 +193,7 @@ export default function ProductPageClient({
             )}
             {product.image_url.endsWith(".mp4") ? (
               <video
-                src={product.image_url}
+                src={displayImage}
                 muted
                 loop
                 autoPlay
@@ -220,7 +203,7 @@ export default function ProductPageClient({
               />
             ) : (
               <img
-                src={product.image_url}
+                src={displayImage}
                 alt={product.name}
                 className="w-full h-full object-cover"
                 loading="lazy"
@@ -242,7 +225,7 @@ export default function ProductPageClient({
                 )}
                 {product.image_url.endsWith(".mp4") ? (
                   <video
-                    src={product.image_url}
+                    src={displayImage}
                     muted
                     loop
                     autoPlay
@@ -252,7 +235,7 @@ export default function ProductPageClient({
                   />
                 ) : (
                   <img
-                    src={product.image_url}
+                    src={displayImage}
                     alt={product.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -277,25 +260,27 @@ export default function ProductPageClient({
                   </h2>
                   <div className=" rounded-xl p-6">
                     <div className="flex flex-wrap gap-2">
-                      {product.platforms.map((platform, index) => (
-                        <span
-                          key={index}
-                          className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-800"
-                        >
-                          {platform}
-                        </span>
-                      ))}
+                      {product.platforms.map(
+                        (platform: string, index: number) => (
+                          <span
+                            key={index}
+                            className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-800"
+                          >
+                            {platform}
+                          </span>
+                        ),
+                      )}
                     </div>
                   </div>
                 </div>
               )}
               {/* طريقة التركيب */}
-              {product.installation_guide && (
+              {/* {product.installation_guide && (
                 <ProductSection
                   title="طريقة التركيب"
                   content={product.installation_guide}
                 />
-              )}
+              )} */}
             </div>
 
             {/* الجانب الايسر */}
@@ -322,39 +307,23 @@ export default function ProductPageClient({
                 </p>
               </div>
 
-              {product.preview_url ? (
-                <Link
-                  href={`${product.preview_url}?id=${product.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-full flex items-center justify-center gap-2 transition-colors duration-200 active:scale-95"
-                >
-                  معاينة القسم
-                  <Eye size={20} />
-                </Link>
-              ) : (
-                <div className="w-full bg-gray-100 text-gray-500 font-semibold py-3 px-6 rounded-full flex items-center justify-center gap-2 cursor-not-allowed">
-                  لا يوجد رابط معاينة
-                  <Eye size={20} />
-                </div>
-              )}
-
-              {/* زر الشراء والإضافة إلى المفضلة */}
               <div className="flex items-center gap-2">
-                {/* زر اشترِ الآن */}
-                <button
-                  onClick={handleBuyNow}
-                  className="
-            flex-[9]
-      bg-black hover:bg-gray-900
-      text-white font-semibold
-      py-3 px-6 rounded-full
-      transition-all duration-300
-      active:scale-95
-    "
-                >
-                  الحصول على القسم
-                </button>
+                {previewUrlWithNiche ? (
+                  <Link
+                    href={previewUrlWithNiche}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-purple-600 flex-[9] hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-full flex items-center justify-center gap-2 transition-colors duration-200 active:scale-95"
+                  >
+                    معاينة القسم
+                    <Eye size={20} />
+                  </Link>
+                ) : (
+                  <div className="w-full bg-gray-100 text-gray-500 font-semibold py-3 px-6 rounded-full flex items-center justify-center gap-2 cursor-not-allowed">
+                    لا يوجد رابط معاينة
+                    <Eye size={20} />
+                  </div>
+                )}
 
                 {/* زر إضافة إلى المفضله */}
                 <button
@@ -401,6 +370,24 @@ export default function ProductPageClient({
                       />
                     </svg>
                   )}
+                </button>
+              </div>
+
+              {/* زر الشراء والإضافة إلى المفضلة */}
+              <div className="flex items-center gap-2">
+                {/* زر اشترِ الآن */}
+                <button
+                  onClick={handleBuyNow}
+                  className="
+            flex-[9]
+      bg-black hover:bg-gray-900
+      text-white font-semibold
+      py-3 px-6 rounded-full
+      transition-all duration-300
+      active:scale-95
+    "
+                >
+                  الحصول على القسم
                 </button>
               </div>
 

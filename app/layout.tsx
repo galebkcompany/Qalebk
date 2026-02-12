@@ -8,7 +8,7 @@ import LayoutClient from "./components/LayoutClient";
 export const metadata: Metadata = {
   metadataBase: new URL("https://qalebk.com"),
   title: {
-    default: "قالبك – أقسام جاهزة لمتجرك انسخ والصق",
+    default: "قالبك – حول واجهة متجرك إلى واجهة احترافية في أقل من 5 دقائق",
     template: "%s | قالبك",
   },
 

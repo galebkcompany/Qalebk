@@ -9,6 +9,7 @@ import { Monitor, Smartphone } from "lucide-react";
 export default function PreviewSection() {
   const searchParams = useSearchParams();
   const productId = searchParams.get("id");
+  const currentNiche = searchParams.get("niche"); // جلب الـ niche من الرابط
   const [loading, setLoading] = useState(true);
   const [injectionCode, setInjectionCode] = useState("");
   const [viewMode, setViewMode] = useState("desktop");
@@ -22,25 +23,44 @@ export default function PreviewSection() {
       }
 
       try {
+        // 1. جلب بيانات المنتج من جدول products بدلاً من codes
         const { data, error } = await supabase
-          .from("codes")
-          .select("preview")
-          .eq("product_id", productId)
-          .eq("type", "script_embed")
+          .from("products")
+          .select("category_images")
+          .eq("id", productId)
           .single();
 
-        if (!error && data && data.preview) {
-          setInjectionCode(data.preview);
+        if (error) throw error;
+
+        if (data && data.category_images) {
+          const categoryData = data.category_images;
+
+          // 2. تحديد الكود المراد عرضه
+          let finalCode = "";
+
+          // إذا كان هناك niche محدد وموجود في البيانات، نأخذ preview_code الخاص به
+          if (currentNiche && categoryData[currentNiche]?.preview_code) {
+            finalCode = categoryData[currentNiche].preview_code;
+          }
+          // كخيار احتياطي (Fallback): نأخذ أول كود متاح إذا لم يتوفر الـ niche المطلوب
+          else {
+            const firstKey = Object.keys(categoryData)[0];
+            if (firstKey) {
+              finalCode = categoryData[firstKey]?.preview_code || "";
+            }
+          }
+
+          setInjectionCode(finalCode);
         }
       } catch (error) {
-        console.error("Error fetching code:", error);
+        console.error("Error fetching code from products table:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchCode();
-  }, [productId]);
+  }, [productId, currentNiche]);
 
   useEffect(() => {
     if (iframeRef.current && injectionCode) {
@@ -226,6 +246,7 @@ ${isScript ? (injectionCode.includes("<script") ? injectionCode : `<script>${inj
       {/* Floating Toggle Button - Fixed at bottom center */}
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] hidden md:block">
         <div className="bg-white/70 backdrop-blur-xl p-1.5 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-white/20 flex items-center gap-1">
+          {/* زر Desktop */}
           <button
             onClick={() => setViewMode("desktop")}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all duration-300 ${
@@ -237,16 +258,35 @@ ${isScript ? (injectionCode.includes("<script") ? injectionCode : `<script>${inj
             <Monitor size={18} />
             <span className="text-sm font-bold">Desktop</span>
           </button>
+
+          {/* زر Mobile مع النجمة الخضراء */}
           <button
             onClick={() => setViewMode("mobile")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all duration-300 ${
+            className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all duration-300 ${
               viewMode === "mobile"
                 ? "bg-black text-white shadow-lg scale-105"
                 : "text-gray-500 hover:bg-gray-100"
             }`}
           >
-            <Smartphone size={18} />
+            <div className="relative">
+              <Smartphone size={18} />
+              {/* النجمة الخضراء مع تأثير نبضي */}
+              <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              </span>
+            </div>
+
             <span className="text-sm font-bold">Mobile</span>
+
+            {/* نجمة إضافية بجانب النص (اختياري) */}
+            {/* <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-4 h-4 text-green-500"
+            >
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg> */}
           </button>
         </div>
       </div>

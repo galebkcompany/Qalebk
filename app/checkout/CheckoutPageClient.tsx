@@ -52,6 +52,8 @@ export default function CheckoutPage() {
   const [lsLoaded, setLsLoaded] = useState(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const pollingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const imageFromQuery = searchParams.get("img");
+  const displayImage = imageFromQuery || product?.image_url || "";
 
 
 
@@ -327,7 +329,7 @@ const handleSubmit = async () => {
                     )}
                     {product.image_url.endsWith(".mp4") ? (
                       <video
-                        src={product.image_url}
+                        src={displayImage}
                         muted
                         loop
                         autoPlay
@@ -337,7 +339,7 @@ const handleSubmit = async () => {
                       />
                     ) : (
                       <img
-                        src={product.image_url}
+                        src={displayImage}
                         alt={product.name}
                         className="w-100 rounded-xl overflow-hidden bg-gray-100 object-cover"
                       />

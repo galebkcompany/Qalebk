@@ -11,35 +11,13 @@ const HeroSection = () => {
 
       <div className="max-w-7xl mx-auto text-center relative z-10">
         {/* العنوان الرئيسي */}
-        <h1 className="  leading-tight mb-3 sm:mb-8 tracking-tight">
-          <span className="text-slate-800 text-3xl sm:text-5xl md:text-6xl lg:text-6xl">
-             متجرك لا يبيع لأن واجهته لا تُقنع
-          </span>
-          <br />
-          {/* تأثير التوهج الأزرق على خلفية بيضاء */}
-          <span className="relative inline-block mt-2 md:mt-6">
-            <span className="text-2xl sm:text-4xl md:text-5xl lg:text-[42px] text-blue-600 ">
-               أضف قسم بطل جاهز لمتجرك يزيد التحويل خلال دقائق — بدون برمجة
-            </span>
-          </span>
+        <h1
+          className="text-gray-800 text-2xl sm:text-3xl sm:font-semibold md:text-[2.6rem] leading-tight tracking-tight"
+        >
+          حول واجهة متجرك إلى{" "}
+          <span className="text-blue-500">واجهة احترافية</span> في أقل من 5
+          دقائق
         </h1>
-
-        {/* الوصف */}
-        <p className="text-slate-700 text-base md:text-xl max-w-3xl mx-auto mb-4 leading-relaxed font-medium">
-           تعمل على
-          <span className="text-blue-600 mx-1">
-            {" "}
-            سلة، زد، شوبيفاي{" "}
-          </span>
-          والمواقع المخصصة — انسخ والصق فقط
-        </p>
-
-        {/* زر الإجراء CTA */}
-        {/* <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button className="px-7 py-4 text-sm sm:text-base sm:px-9 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-all duration-300 transform  ">
-            استعرض الأقسام
-          </button>
-        </div> */}
       </div>
     </section>
   );

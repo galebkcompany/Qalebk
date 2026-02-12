@@ -13,7 +13,8 @@ interface Product {
   preview_url: string | null;
   customizable_fields?: string | null;
   platforms: string[];
-  installation_guide: string | null;
+  category_images: any;
+  // installation_guide: string | null;
   is_featured: boolean;
   prices: {
     amount: number;
@@ -35,7 +36,7 @@ async function getProduct(slug: string): Promise<Product | null> {
         preview_url,
         customizable_fields,
         platforms,
-        installation_guide,
+        category_images,
         is_featured,
         prices (
           amount,

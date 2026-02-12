@@ -51,8 +51,8 @@ export default function FavoritesPage() {
         </h1>
 
         <div className="space-y-6">
-          {items.map((item) => (
-            <Link href={item.product_url} key={item.id} className="block">
+          {items.map((item, index) => (
+            <Link href={item.product_url} key={`${item.id}-${index}`} className="block">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between border border-gray-200 p-4 rounded-xl bg-white hover:shadow-sm transition-all cursor-pointer gap-4">
                 {/* الصورة */}
                 {item.image_url.endsWith(".mp4") ? (

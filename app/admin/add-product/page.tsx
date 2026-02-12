@@ -64,7 +64,7 @@ export default function AddProduct() {
   const [platforms, setPlatforms] = useState<string[]>([]);
   const [installation, setInstallation] = useState("");
   const [customizableFields, setCustomizableFields] = useState(
-    "يمكن تخصيص الألوان، النصوص، الخطوط، حجم العناصر، وترتيب المحتوى بما يتناسب مع هوية مشروعك.",
+    "يمكن تخصيص الألوان، النصوص، الخطوط، حجم العناصر، وترتيب المحتوى والصور بما يتناسب مع هوية متجرك او موقعك",
   );
   const [previewCode, setPreviewCode] = useState("");
 
@@ -75,9 +75,29 @@ export default function AddProduct() {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
+  // أضف هذه الـ States بعد السطر 48
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [categoryImages, setCategoryImages] = useState<{
+    [category: string]: {
+      screenshot: File | null;
+      preview_code: string;
+    };
+  }>({});
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const categoryDropdownRef = useRef<HTMLDivElement | null>(null);
+
   // الأكواد
   const [htmlCssCode, setHtmlCssCode] = useState("");
   const [scriptEmbedCode, setScriptEmbedCode] = useState("");
+
+  // أضف هذا مع PLATFORM_OPTIONS
+  const CATEGORY_OPTIONS = [
+    { value: "perfumes", label: "عطور" },
+    { value: "abayas", label: "عبايات" },
+    { value: "jewelry", label: "مجوهرات" },
+    { value: "cosmetics", label: "مستحضرات تجميل" },
+    { value: "electronics", label: "إلكترونيات" },
+  ];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -109,121 +129,209 @@ export default function AddProduct() {
     loadPrices();
   }, []);
 
-  const handleSubmit = async () => {
-    if (!name || !image) {
-      alert("الاسم والصورة مطلوبان");
-      return;
+  // أضف هذه الدوال قبل handleSubmit
+
+  // عند اختيار/إلغاء فئة
+  const handleCategoryToggle = (categoryValue: string) => {
+    if (selectedCategories.includes(categoryValue)) {
+      // إزالة الفئة
+      setSelectedCategories(
+        selectedCategories.filter((c) => c !== categoryValue),
+      );
+      const newCategoryImages = { ...categoryImages };
+      delete newCategoryImages[categoryValue];
+      setCategoryImages(newCategoryImages);
+    } else {
+      // إضافة الفئة
+      setSelectedCategories([...selectedCategories, categoryValue]);
+      setCategoryImages({
+        ...categoryImages,
+        [categoryValue]: {
+          screenshot: null,
+          preview_code: "",
+        },
+      });
     }
+  };
+  // ✅ دالة جديدة لتحديث كود المعاينة لفئة معينة
+  const handlePreviewCodeChange = (category: string, code: string) => {
+    setCategoryImages({
+      ...categoryImages,
+      [category]: {
+        ...categoryImages[category],
+        preview_code: code,
+      },
+    });
+  };
 
-    if (!htmlCssCode && !scriptEmbedCode) {
-      alert("يجب إضافة كود واحد على الأقل (HTML/CSS أو Script Embed)");
-      return;
+  // رفع Screenshot لفئة معينة
+  const handleScreenshotUpload = (category: string, file: File | null) => {
+    setCategoryImages({
+      ...categoryImages,
+      [category]: {
+        ...categoryImages[category],
+        screenshot: file,
+      },
+    });
+  };
+
+const handleSubmit = async () => {
+  if (!name || !image) {
+    alert("الاسم والصورة مطلوبان");
+    return;
+  }
+
+  if (!htmlCssCode && !scriptEmbedCode) {
+    alert("يجب إضافة كود واحد على الأقل");
+    return;
+  }
+
+  // ✅ التحقق من بيانات الفئات
+  if (selectedCategories.length > 0) {
+    for (const cat of selectedCategories) {
+      const catLabel = CATEGORY_OPTIONS.find((c) => c.value === cat)?.label;
+
+      // التحقق من Screenshot
+      if (!categoryImages[cat]?.screenshot) {
+        alert(`يجب رفع صورة Screenshot لفئة: ${catLabel}`);
+        return;
+      }
+
+      // ✅ التحقق من كود المعاينة
+      if (!categoryImages[cat]?.preview_code?.trim()) {
+        alert(`يجب إضافة كود المعاينة لفئة: ${catLabel}`);
+        return;
+      }
     }
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      // 1. رفع الصورة إلى Cloudinary
-      // ✅ الكود المحسّن
-      const formData = new FormData();
-      formData.append("file", image);
-      formData.append(
+  try {
+    // 1. رفع الصورة الرئيسية
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append(
+      "upload_preset",
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
+    );
+
+    const isVideo = image.type.startsWith("video/");
+    const resourceType = isVideo ? "video" : "image";
+    const uploadUrl = `${process.env.NEXT_PUBLIC_CLOUDINARY_URL!.replace(
+      "/image/upload",
+      `/${resourceType}/upload`
+    )}`;
+
+    const cloudRes = await axios.post(uploadUrl, formData);
+    const image_url = cloudRes.data.secure_url;
+    const image_public_id = cloudRes.data.public_id;
+
+    // 2. ✅ رفع صور الفئات وحفظ البيانات
+    const categoryImagesData: any = {};
+
+    for (const category of selectedCategories) {
+      const catData = categoryImages[category];
+
+      // رفع Screenshot
+      const screenshotFormData = new FormData();
+      screenshotFormData.append("file", catData.screenshot!);
+      screenshotFormData.append(
         "upload_preset",
         process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
       );
 
-      // تحديد نوع الملف تلقائياً
-      const isVideo = image.type.startsWith("video/");
-      const resourceType = isVideo ? "video" : "image";
-
-      // رفع الملف مع تحديد النوع في الرابط
-      const uploadUrl = `${process.env.NEXT_PUBLIC_CLOUDINARY_URL!.replace("/image/upload", `/${resourceType}/upload`)}`;
-
-      const cloudRes = await axios.post(uploadUrl, formData);
-      const image_url = cloudRes.data.secure_url;
-      const image_public_id = cloudRes.data.public_id;
-
-      // 2. توليد slug
-      const finalSlug = slug || slugify(name, { lower: true, strict: true });
-
-      // 3. حفظ المنتج
-      const { data: productData, error: productError } = await supabase
-        .from("products")
-        .insert([
-          {
-            name,
-            description: fullDesc,
-            product_type: productType,
-            image_url,
-            image_public_id,
-            preview_url:
-              productType === "section" ? "/preview/section" : "/preview/page",
-            variant_id: priceId,
-            is_featured: isFeatured,
-            platforms,
-            installation_guide: installation,
-            customizable_fields: customizableFields,
-            slug: finalSlug,
-          },
-        ])
-        .select()
-        .single();
-
-      if (productError) throw productError;
-
-      // 4. حفظ الأكواد
-      const codes = [];
-      if (htmlCssCode) {
-        codes.push({
-          product_id: productData.id,
-          type: "html_css",
-          code: htmlCssCode,
-        });
-      }
-      if (scriptEmbedCode) {
-        codes.push({
-          product_id: productData.id,
-          type: "script_embed",
-          code: scriptEmbedCode,
-          preview: previewCode || scriptEmbedCode,
-        });
-      }
-
-      if (codes.length > 0) {
-        const { error: codesError } = await supabase
-          .from("codes")
-          .insert(codes);
-
-        if (codesError) throw codesError;
-      }
-
-      alert("✅ تم حفظ المنتج والأكواد بنجاح!");
-
-      // إعادة تعيين النموذج
-      setName("");
-      setFullDesc("");
-      setProductType("section");
-      setPriceId("9.49");
-      setIsFeatured(false);
-      setPlatforms([]);
-      setInstallation(
-        "لأصحاب المتاجر و المواقع الجاهزه يمكنك نسخ الكود وتضمينه في متجرك او موقعك مباشره خلال دقائق فقط بدون معرفه بالبرمجه اما المبرمجين واصاحب المواقع المخصصه يمكنهم استخادم الكود مباشره داخل مشروعهم",
+      const screenshotRes = await axios.post(
+        process.env.NEXT_PUBLIC_CLOUDINARY_URL!,
+        screenshotFormData,
       );
-      setCustomizableFields(
-        "يمكن تخصيص الألوان، النصوص، الخطوط، حجم العناصر، وترتيب المحتوى والصور بما يتناسب مع هوية متجرك او موقعك.",
-      );
-      setSlug("");
-      setImage(null);
-      setHtmlCssCode("");
-      setScriptEmbedCode("");
-      setPreviewCode("");
-    } catch (error: any) {
-      console.error("❌ خطأ:", error);
-      alert("حدث خطأ: " + (error.message || "خطأ غير معروف"));
-    } finally {
-      setLoading(false);
+
+      // ✅ حفظ البيانات في categoryImagesData
+      categoryImagesData[category] = {
+        screenshot: screenshotRes.data.secure_url,
+        preview_code: catData.preview_code || "",
+      };
     }
-  };
+
+    // 3. توليد slug
+    const finalSlug = slug || slugify(name, { lower: true, strict: true });
+
+    // 4. حفظ المنتج مع بيانات الفئات
+    const { data: productData, error: productError } = await supabase
+      .from("products")
+      .insert([
+        {
+          name,
+          description: fullDesc,
+          product_type: productType,
+          image_url,
+          image_public_id,
+          preview_url:
+            productType === "section" ? "/preview/section" : "/preview/page",
+          variant_id: priceId,
+          is_featured: isFeatured,
+          platforms,
+          installation_guide: installation,
+          customizable_fields: customizableFields,
+          slug: finalSlug,
+          category_images: categoryImagesData, // ✅ الآن يحتوي على البيانات
+        },
+      ])
+      .select()
+      .single();
+
+    if (productError) throw productError;
+
+    // 5. حفظ الأكواد
+    const codes = [];
+    if (htmlCssCode) {
+      codes.push({
+        product_id: productData.id,
+        type: "html_css",
+        code: htmlCssCode,
+      });
+    }
+    if (scriptEmbedCode) {
+      codes.push({
+        product_id: productData.id,
+        type: "script_embed",
+        code: scriptEmbedCode,
+        preview: previewCode || scriptEmbedCode,
+      });
+    }
+
+    if (codes.length > 0) {
+      const { error: codesError } = await supabase.from("codes").insert(codes);
+      if (codesError) throw codesError;
+    }
+
+    alert("✅ تم حفظ المنتج والأكواد والصور بنجاح!");
+
+    // إعادة تعيين النموذج
+    setName("");
+    setFullDesc("");
+    setProductType("section");
+    setPriceId("13.49");
+    setIsFeatured(false);
+    setPlatforms([]);
+    setSelectedCategories([]);
+    setCategoryImages({});
+    setInstallation("");
+    setCustomizableFields(
+      "يمكن تخصيص الألوان، النصوص، الخطوط، حجم العناصر، وترتيب المحتوى والصور بما يتناسب مع هوية متجرك او موقعك"
+    );
+    setSlug("");
+    setImage(null);
+    setHtmlCssCode("");
+    setScriptEmbedCode("");
+    setPreviewCode("");
+  } catch (error: any) {
+    console.error("❌ خطأ:", error);
+    alert("حدث خطأ: " + (error.message || "خطأ غير معروف"));
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-white to-gray-100 p-6">
@@ -344,7 +452,7 @@ export default function AddProduct() {
             </label>
             <textarea
               className="w-full border-2 border-gray-300 rounded-lg p-3 focus:border-black focus:outline-none transition-colors"
-              rows={4}
+              rows={1}
               value={customizableFields}
               onChange={(e) => setCustomizableFields(e.target.value)}
               placeholder="مثال: يمكن تخصيص الألوان، النصوص، حجم العداد، التاريخ المستهدف..."
@@ -417,6 +525,159 @@ export default function AddProduct() {
               </div>
             )}
           </div>
+
+          {/* ═══════════════ الفئات المدعومة ═══════════════ */}
+          <div ref={categoryDropdownRef} className="relative mb-6">
+            <label className="block font-medium text-gray-700 mb-2">
+              الفئات التي يعمل عليها هذا القسم
+            </label>
+            <div
+              onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
+              className="w-full min-h-[56px] border-2 border-gray-300 rounded-lg px-4 py-3 cursor-pointer flex flex-wrap gap-2 items-center hover:border-gray-400 transition-colors"
+            >
+              {selectedCategories.length === 0 && (
+                <span className="text-gray-400">اختر الفئات المدعومة</span>
+              )}
+              {selectedCategories.map((cat) => {
+                const label = CATEGORY_OPTIONS.find(
+                  (o) => o.value === cat,
+                )?.label;
+                return (
+                  <span
+                    key={cat}
+                    className="bg-black text-white rounded-full px-4 py-1.5 text-sm flex items-center gap-2"
+                  >
+                    {label}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCategoryToggle(cat);
+                      }}
+                      className="hover:text-red-400 font-bold"
+                    >
+                      ×
+                    </button>
+                  </span>
+                );
+              })}
+            </div>
+
+            {categoryDropdownOpen && (
+              <div className="absolute z-10 mt-2 w-full bg-white rounded-lg shadow-xl border-2 border-gray-200 p-3 flex flex-wrap gap-2">
+                {CATEGORY_OPTIONS.map((option) => {
+                  const selected = selectedCategories.includes(option.value);
+                  return (
+                    <div
+                      key={option.value}
+                      onClick={() => handleCategoryToggle(option.value)}
+                      className={`px-4 py-2 rounded-full cursor-pointer border-2 text-sm transition-all ${
+                        selected
+                          ? "bg-black text-white border-black"
+                          : "border-gray-300 hover:border-black hover:bg-gray-50"
+                      }`}
+                    >
+                      {option.label}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* ═══════════════ صور الفئات ═══════════════ */}
+          {selectedCategories.length > 0 && (
+            <div className="mb-6 p-6 bg-gray-50 rounded-lg border-2 border-gray-200">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
+                📸 صور وأكواد الفئات المحددة
+              </h3>
+
+              {selectedCategories.map((category) => {
+                const categoryLabel = CATEGORY_OPTIONS.find(
+                  (c) => c.value === category,
+                )?.label;
+                const catImages = categoryImages[category];
+
+                return (
+                  <div
+                    key={category}
+                    className="mb-6 p-4 bg-white rounded-lg border border-gray-300"
+                  >
+                    <h4 className="font-bold text-lg text-gray-700 mb-3">
+                      {categoryLabel}
+                    </h4>
+
+                    {/* Screenshot */}
+                    <div className="mb-4">
+                      <label className="block font-medium text-gray-600 mb-2 text-sm">
+                        صورة Screenshot (تظهر عند اختيار الفئة) *
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) =>
+                          handleScreenshotUpload(
+                            category,
+                            e.target.files?.[0] || null,
+                          )
+                        }
+                        className="w-full bg-white rounded-lg border border-gray-300 p-3 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-black file:text-white hover:file:bg-gray-800"
+                      />
+                      {catImages?.screenshot && (
+                        <div className="mt-2 flex items-center gap-2">
+                          <p className="text-sm text-green-600">
+                            ✓ تم اختيار: {catImages.screenshot.name}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleScreenshotUpload(category, null)
+                            }
+                            className="text-xs text-red-600 hover:text-red-800 underline"
+                          >
+                            إزالة
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ✅ كود المعاينة الخاص بهذه الفئة */}
+                    <div>
+                      <label className="block font-medium text-gray-600 mb-2 text-sm">
+                        كود المعاينة الخاص بـ {categoryLabel}
+                      </label>
+                      <textarea
+                        className="w-full border-2 border-gray-300 rounded-lg p-3 focus:border-black focus:outline-none transition-colors font-mono text-sm"
+                        rows={8}
+                        value={catImages?.preview_code || ""}
+                        onChange={(e) =>
+                          handlePreviewCodeChange(category, e.target.value)
+                        }
+                        placeholder={`<script>
+// كود المعاينة الخاص بفئة ${categoryLabel}
+(function() {
+  window.heroConfig = {
+    images: [], // سيتم ملؤها تلقائياً
+    autoplay: true,
+    interval: 3000
+  };
+})();
+</script>`}
+                      />
+                      {catImages?.preview_code && (
+                        <p className="mt-2 text-sm text-green-600">
+                          ✓ تم إدخال {catImages.preview_code.length} حرف
+                        </p>
+                      )}
+                      <p className="mt-1 text-xs text-gray-500">
+                        💡 الصور سيتم تمريرها تلقائياً من قاعدة البيانات
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           {/* طريقة التركيب */}
           <div className="mb-6">
@@ -505,30 +766,30 @@ export default function AddProduct() {
                   </div>
                 ),
               },
-              {
-                label: "كود المعاينة",
-                value: "preview",
-                content: (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-3">
-                      الكود الذي سيظهر في صفحة المعاينة (يُنصح أن يكون نفس كود
-                      Script Embed)
-                    </p>
-                    <textarea
-                      className="w-full border-2 border-gray-300 rounded-lg p-4 focus:border-black focus:outline-none transition-colors font-mono text-sm"
-                      rows={12}
-                      value={previewCode}
-                      onChange={(e) => setPreviewCode(e.target.value)}
-                      placeholder={`كود المعاينه هنا...`}
-                    />
-                    {previewCode && (
-                      <p className="mt-2 text-sm text-green-600">
-                        ✓ تم إدخال {previewCode.length} حرف
-                      </p>
-                    )}
-                  </div>
-                ),
-              },
+              // {
+              //   label: "كود المعاينة",
+              //   value: "preview",
+              //   content: (
+              //     <div>
+              //       <p className="text-sm text-gray-600 mb-3">
+              //         الكود الذي سيظهر في صفحة المعاينة (يُنصح أن يكون نفس كود
+              //         Script Embed)
+              //       </p>
+              //       <textarea
+              //         className="w-full border-2 border-gray-300 rounded-lg p-4 focus:border-black focus:outline-none transition-colors font-mono text-sm"
+              //         rows={12}
+              //         value={previewCode}
+              //         onChange={(e) => setPreviewCode(e.target.value)}
+              //         placeholder={`كود المعاينه هنا...`}
+              //       />
+              //       {previewCode && (
+              //         <p className="mt-2 text-sm text-green-600">
+              //           ✓ تم إدخال {previewCode.length} حرف
+              //         </p>
+              //       )}
+              //     </div>
+              //   ),
+              // },
             ]}
           />
         </div>
