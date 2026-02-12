@@ -327,7 +327,7 @@ const handleSubmit = async () => {
                         مميز ★
                       </div>
                     )}
-                    {product.image_url.endsWith(".mp4") ? (
+                    {displayImage.endsWith(".mp4") ? (
                       <video
                         src={displayImage}
                         muted

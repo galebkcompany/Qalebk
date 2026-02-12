@@ -63,7 +63,7 @@ export default function ProductCard({
             </div>
           )}
 
-          {product.image_url.endsWith(".mp4") ? (
+          {displayImage.endsWith(".mp4") ? (
             <video
               src={optimizedUrl}
               muted
