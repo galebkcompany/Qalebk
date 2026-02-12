@@ -288,13 +288,25 @@ export default function ProductPageClient({
               {/* قسم السعر */}
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl font-bold text-black">
-                    {product.prices.amount} {product.prices.currency}
+                  <span className="text-3xl font-bold text-black flex items-center gap-1">
+                    <img
+                      src="/icons/SAR.png"
+                      alt="SAR"
+                      className="w-5 h-5 inline-block translate-y-[2px]"
+                    />
+                    {product.prices.amount}
                   </span>
-                  <span className="text-lg text-gray-400 line-through">
-                    {originalPrice} {product.prices.currency}
+
+                  <span className="text-lg text-gray-400 line-through flex items-center gap-1">
+                    <img
+                      src="/icons/SAR.png"
+                      alt="SAR"
+                      className="w-4 h-4 opacity-60 inline-block translate-y-[1px]"
+                    />
+                    {originalPrice}
                   </span>
                 </div>
+
                 <p className="text-green-500 font-medium text-base">
                   قسم إضافي مجاني لأول 10 عملاء!
                 </p>

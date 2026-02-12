@@ -55,8 +55,6 @@ export default function CheckoutPage() {
   const imageFromQuery = searchParams.get("img");
   const displayImage = imageFromQuery || product?.image_url || "";
 
-
-
   // ✅ Cleanup عند unmount المكون
   useEffect(() => {
     return () => {
@@ -108,106 +106,105 @@ export default function CheckoutPage() {
     fetchProduct();
   }, [productId, router]);
 
-const handleScriptLoad = useCallback(() => {
-  console.log("🔵 Script loaded");
+  const handleScriptLoad = useCallback(() => {
+    console.log("🔵 Script loaded");
 
-  if (window.createLemonSqueezy) {
-    window.createLemonSqueezy();
+    if (window.createLemonSqueezy) {
+      window.createLemonSqueezy();
 
-    if (window.LemonSqueezy?.Setup) {
-      window.LemonSqueezy.Setup({
-        eventHandler: (event) => {
-          console.log("🟣 LemonSqueezy Event:", event.event);
+      if (window.LemonSqueezy?.Setup) {
+        window.LemonSqueezy.Setup({
+          eventHandler: (event) => {
+            console.log("🟣 LemonSqueezy Event:", event.event);
 
-          if (event.event === "Checkout.Success") {
-            console.log("✅ Payment successful!", event.data);
-            
-            // إغلاق الـ overlay
-            if (window.LemonSqueezy?.Url?.Close) {
-              window.LemonSqueezy.Url.Close();
-            }
-            
-            // ✅ الزر يبقى في حالة تحميل - الـ polling سيتولى الباقي
-          }
-        },
-      });
-    }
-  }
-}, []);
+            if (event.event === "Checkout.Success") {
+              console.log("✅ Payment successful!", event.data);
 
-const handleSubmit = async () => {
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    setError("يرجى إدخال بريد إلكتروني صحيح");
-    return;
-  }
-
-  setError("");
-  setSubmitting(true);
-
-  try {
-    const orderRes = await fetch("/api/orders/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, product_id: productId }),
-    });
-
-    if (!orderRes.ok) throw new Error("فشل إنشاء الطلب");
-    const { order_id, delivery_token, variant_id } = await orderRes.json();
-
-    const checkoutRes = await fetch("/api/checkout/create-url", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ variant_id, email, order_id }),
-    });
-
-    if (!checkoutRes.ok) throw new Error("فشل الحصول على رابط الدفع");
-    const { checkout_url } = await checkoutRes.json();
-
-    if (window.LemonSqueezy) {
-      window.LemonSqueezy.Url.Open(checkout_url);
-      
-      // ✅ مراقبة عودة التركيز للصفحة (عند إغلاق الـ overlay)
-      const handleFocus = () => {
-        console.log("🔵 User returned to page");
-        
-        // ✅ انتظر قليلاً ثم تحقق من حالة الدفع
-        setTimeout(async () => {
-          try {
-            const response = await fetch(
-              `/api/orders/check-status?order_id=${order_id}&email=${email}`,
-            );
-            
-            if (response.ok) {
-              const data = await response.json();
-              
-              // ✅ إذا لم يكتمل الدفع، أرجع الزر
-              if (!data.is_completed) {
-                console.log("⚠️ Payment not completed - resetting button");
-                setSubmitting(false);
+              // إغلاق الـ overlay
+              if (window.LemonSqueezy?.Url?.Close) {
+                window.LemonSqueezy.Url.Close();
               }
+
+              // ✅ الزر يبقى في حالة تحميل - الـ polling سيتولى الباقي
             }
-          } catch (error) {
-            console.error("Check status error:", error);
-          }
-        }, 100);
-        
-        // ✅ إزالة المستمع بعد أول استخدام
-        window.removeEventListener('focus', handleFocus);
-      };
-      
-      window.addEventListener('focus', handleFocus);
-      
-    } else {
-      window.open(checkout_url, "_blank");
+          },
+        });
+      }
+    }
+  }, []);
+
+  const handleSubmit = async () => {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("يرجى إدخال بريد إلكتروني صحيح");
+      return;
     }
 
-    // بدء الـ Polling
-    startPolling(order_id, email, delivery_token);
-  } catch (err: any) {
-    setError(err.message);
-    setSubmitting(false);
-  }
-};
+    setError("");
+    setSubmitting(true);
+
+    try {
+      const orderRes = await fetch("/api/orders/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, product_id: productId }),
+      });
+
+      if (!orderRes.ok) throw new Error("فشل إنشاء الطلب");
+      const { order_id, delivery_token, variant_id } = await orderRes.json();
+
+      const checkoutRes = await fetch("/api/checkout/create-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ variant_id, email, order_id }),
+      });
+
+      if (!checkoutRes.ok) throw new Error("فشل الحصول على رابط الدفع");
+      const { checkout_url } = await checkoutRes.json();
+
+      if (window.LemonSqueezy) {
+        window.LemonSqueezy.Url.Open(checkout_url);
+
+        // ✅ مراقبة عودة التركيز للصفحة (عند إغلاق الـ overlay)
+        const handleFocus = () => {
+          console.log("🔵 User returned to page");
+
+          // ✅ انتظر قليلاً ثم تحقق من حالة الدفع
+          setTimeout(async () => {
+            try {
+              const response = await fetch(
+                `/api/orders/check-status?order_id=${order_id}&email=${email}`,
+              );
+
+              if (response.ok) {
+                const data = await response.json();
+
+                // ✅ إذا لم يكتمل الدفع، أرجع الزر
+                if (!data.is_completed) {
+                  console.log("⚠️ Payment not completed - resetting button");
+                  setSubmitting(false);
+                }
+              }
+            } catch (error) {
+              console.error("Check status error:", error);
+            }
+          }, 100);
+
+          // ✅ إزالة المستمع بعد أول استخدام
+          window.removeEventListener("focus", handleFocus);
+        };
+
+        window.addEventListener("focus", handleFocus);
+      } else {
+        window.open(checkout_url, "_blank");
+      }
+
+      // بدء الـ Polling
+      startPolling(order_id, email, delivery_token);
+    } catch (err: any) {
+      setError(err.message);
+      setSubmitting(false);
+    }
+  };
 
   const startPolling = (
     orderId: string,
@@ -268,8 +265,6 @@ const handleSubmit = async () => {
     );
   };
 
-
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -304,7 +299,7 @@ const handleSubmit = async () => {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 flex mb-2 items-center justify-center gap-2">
               <ShoppingBag className="w-5 h-5" />
-                  ملخص الطلب
+              ملخص الطلب
             </h1>
             <p className="text-gray-600">
               خطوة واحدة تفصلك عن الحصول على قسمك الجديد
@@ -363,8 +358,8 @@ const handleSubmit = async () => {
                       </div>
                     )}
                     <div className="text-base text-green-600 justify-left flex mt-2 ">
-                     + قسم إضافي مجاني
-                  </div>
+                      + قسم إضافي مجاني
+                    </div>
                   </div>
                 </div>
               </div>
@@ -397,7 +392,7 @@ const handleSubmit = async () => {
                 {/* طريقة الاستلام */}
                 <div>
                   <label className="block text-sm font-bold text-gray-900 mb-3">
-                   الاستلام
+                    الاستلام
                   </label>
 
                   <div className="p-4 rounded-xl border border-gray-300 bg-white">
@@ -411,7 +406,7 @@ const handleSubmit = async () => {
                           <div className="flex items-center gap-2">
                             <Code className="w-5 h-5 text-purple-600" />
                             <span className="font-bold text-gray-900">
-                             تنزيل الكود الكامل
+                              تنزيل الكود الكامل
                             </span>
                           </div>
                         </div>
@@ -422,8 +417,6 @@ const handleSubmit = async () => {
                     </div>
                   </div>
                 </div>
-
-                
               </div>
             </div>
 
@@ -437,8 +430,13 @@ const handleSubmit = async () => {
                 <div className="space-y-3">
                   <div className="flex justify-between text-gray-700">
                     <span>سعر المنتج</span>
-                    <span className="line-through text-gray-400">
-                      SAR {originalPrice}
+                    <span className="line-through text-gray-400 flex items-center gap-1">
+                      <img
+                        src="/icons/SAR.png"
+                        alt="SAR"
+                        className="w-4 h-4 inline-block translate-y-[1px] opacity-60"
+                      />
+                      {originalPrice}
                     </span>
                   </div>
 
@@ -451,15 +449,27 @@ const handleSubmit = async () => {
 
                   <div className="border-t border-gray-200 pt-3 flex justify-between text-lg text-gray-900">
                     <span>سعر المنتج بعد الخصم</span>
-                    <span className="font-semibold">SAR {finalPrice}</span>
+                    <span className="font-semibold flex items-center gap-1">
+                      <img
+                        src="/icons/SAR.png"
+                        alt="SAR"
+                        className="w-5 h-5 inline-block translate-y-[2px]"
+                      />
+                      {finalPrice}
+                    </span>
                   </div>
 
                   <div className="border-t border-gray-200 pt-3 flex justify-between text-xl font-bold">
                     <span>الإجمالي</span>
-                    <span className="text-green-600">SAR {finalPrice}</span>
+                    <span className="text-green-600 flex items-center gap-1">
+                      <img
+                        src="/icons/SAR.png"
+                        alt="SAR"
+                        className="w-5 h-5 inline-block translate-y-[2px]"
+                      />
+                      {finalPrice}
+                    </span>
                   </div>
-                  
-                 
                 </div>
 
                 <div className="border-t border-gray-100 pt-6 space-y-2">

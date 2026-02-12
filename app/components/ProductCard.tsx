@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 
-
 type Product = {
   id: string;
   slug: string;
@@ -10,11 +9,12 @@ type Product = {
   price: number;
   platforms: string[];
   is_featured: boolean;
-  category_images?: { // العمود الجديد
+  category_images?: {
+    // العمود الجديد
     [key: string]: {
       screenshot: string;
       preview_assets: string[];
-    }
+    };
   };
 };
 
@@ -24,9 +24,12 @@ const getOptimizedMediaUrl = (url: string) => {
 
   if (url.endsWith(".mp4")) {
     // تحسين الفيديو: q_auto للضغط، vc_auto لاختيار الكوديك المناسب، w_1280 لتحديد العرض
-    return url.replace("/video/upload/", "/video/upload/q_auto,vc_auto,w_1280/");
+    return url.replace(
+      "/video/upload/",
+      "/video/upload/q_auto,vc_auto,w_1280/",
+    );
   }
-  
+
   // تحسين الصورة: f_auto للصيغة، q_auto للضغط، w_700 للعرض
   return url.replace("/image/upload/", "/image/upload/f_auto,q_auto,w_700/");
 };
@@ -40,19 +43,21 @@ export default function ProductCard({
   index: number;
   currentNiche?: string;
 }) {
-  
-
-// المنطق: إذا وجدنا صورة للنيش الحالي في الـ jsonb نستخدمها، وإلا نستخدم الصورة الافتراضية
-  const displayImage = (currentNiche && product.category_images?.[currentNiche]?.screenshot) 
-    ? product.category_images[currentNiche].screenshot 
-    : product.image_url;
+  // المنطق: إذا وجدنا صورة للنيش الحالي في الـ jsonb نستخدمها، وإلا نستخدم الصورة الافتراضية
+  const displayImage =
+    currentNiche && product.category_images?.[currentNiche]?.screenshot
+      ? product.category_images[currentNiche].screenshot
+      : product.image_url;
 
   const discountedPrice = product.price; // هو السعر بعد الخصم
   const originalPrice = product.price * 2; // السعر قبل الخصم
   const optimizedUrl = getOptimizedMediaUrl(displayImage);
 
   return (
-    <Link href={`/product/${product.slug}${currentNiche ? `?niche=${currentNiche}` : ''}`} className="block">
+    <Link
+      href={`/product/${product.slug}${currentNiche ? `?niche=${currentNiche}` : ""}`}
+      className="block"
+    >
       <div className="bg-white rounded-lg border border-gray-200  overflow-hidden hover:shadow-md transition">
         {/* Image */}
         <div className="relative w-full overflow-hidden bg-gray-100 ">
@@ -96,13 +101,19 @@ export default function ProductCard({
 
           {/* Price + Icons */}
           <div className="flex items-center justify-between text-black">
-            {/* Price */}
             <div className="flex items-center gap-3">
-              <span className="font-bold text-xl text-green-600">
-                SAR {discountedPrice.toFixed(2)}
+              <span className="font-bold text-xl text-green-600 flex items-center gap-1">
+                <img src="/icons/SAR.png" alt="SAR" className="w-4.5 h-4.5" />
+                {discountedPrice.toFixed(2)}
               </span>
-              <span className="text-gray-400 text-sm line-through">
-                SAR {originalPrice.toFixed(2)}
+
+              <span className="text-gray-400 text-sm line-through flex items-center gap-1">
+                <img
+                  src="/icons/SAR.png"
+                  alt="SAR"
+                  className="w-3.5 h-3.5 opacity-60"
+                />
+                {originalPrice.toFixed(2)}
               </span>
             </div>
 

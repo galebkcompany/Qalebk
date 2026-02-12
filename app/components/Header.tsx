@@ -43,10 +43,10 @@ export default function Header() {
 
   return (
     <>
-      <header className="w-full border-b border-gray-300 bg-backg py-2 text-black stickyz-[50]">
+      <header className="w-full border-b border-gray-300 bg-backg py-1text-black stickyz-[50]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           {/* حاوية رئيسية مرنة (Flexbox) تضمن وجود الجميع في صف واحد دائماً */}
-          <div className="flex items-center justify-between gap-2 h-12 sm:h-16">
+          <div className="flex items-center justify-between gap-2 h-16">
             
             {/* 1. اللوجو وزر الفئات (الشاشات الكبيرة) */}
             <div className="flex items-center gap-2 sm:gap-6 flex-shrink-0">
@@ -96,7 +96,7 @@ export default function Header() {
               <input
                 type="text"
                 placeholder="ابحث عن قسم..."
-                className="w-full rounded-full bg-white border border-gray-400 px-4 py-2 sm:py-3 text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-black transition-all"
+                className="w-full rounded-full bg-white border border-gray-400 px-4 py-3 text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-black transition-all"
               />
             </div>
 
